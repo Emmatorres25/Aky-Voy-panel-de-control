@@ -3,405 +3,57 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#0C0A15">
-<title>AkyVoy - Panel de Control</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<title>AkyVoy Panel</title>
 <style>
-:root{--p:#7C3AED;--pd:#5B21B6;--pdd:#4C1D95;--pl:#A78BFA;--pll:#C4B5FD;--pb:#EDE9FE;--a:#F59E0B;--al:#FCD34D;--bg:#0C0A15;--bg2:#13101F;--cd:#1A1625;--ch:#231E33;--tx:#F8F7FF;--tx2:#A5A0B8;--tx3:#6B6580;--ok:#10B981;--no:#EF4444;--wn:#F59E0B;--bd:#2A2540}
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Outfit',sans-serif}
-body{background:var(--bg);color:var(--tx);overflow-x:hidden;min-height:100vh}
-::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg2)}::-webkit-scrollbar-thumb{background:var(--pd);border-radius:3px}
-input,textarea,select,button{font-family:inherit}
-@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@keyframes toastIn{from{transform:translateX(110%);opacity:0}to{transform:translateX(0);opacity:1}}
-@keyframes toastOut{from{transform:translateX(0);opacity:1}to{transform:translateX(110%);opacity:0}}
-.aUp{animation:slideUp .4s ease-out both}.aFi{animation:fadeIn .3s ease-out both}
-.d1{animation-delay:.05s}.d2{animation-delay:.1s}.d3{animation-delay:.15s}.d4{animation-delay:.2s}.d5{animation-delay:.25s}.d6{animation-delay:.3s}.d7{animation-delay:.35s}.d8{animation-delay:.4s}
-.btnP{background:linear-gradient(135deg,var(--p),var(--pd));color:#fff;border:none;padding:9px 18px;border-radius:10px;font-weight:600;cursor:pointer;transition:all .2s;font-size:13px;display:inline-flex;align-items:center;justify-content:center;gap:5px}
-.btnP:hover{box-shadow:0 4px 16px rgba(124,58,237,.3)}.btnP:active{transform:scale(.97)}
-.btnS{background:var(--cd);color:var(--tx);border:1px solid var(--bd);padding:8px 16px;border-radius:10px;font-weight:500;cursor:pointer;transition:all .2s;font-size:13px}
-.btnS:hover{background:var(--ch);border-color:var(--pl)}.btnS:active{transform:scale(.97)}
-.btnOk{background:linear-gradient(135deg,var(--ok),#059669);color:#fff;border:none;padding:9px 18px;border-radius:10px;font-weight:600;cursor:pointer;transition:all .2s;font-size:13px;display:inline-flex;align-items:center;justify-content:center;gap:5px}
-.btnOk:hover{box-shadow:0 4px 16px rgba(16,185,129,.3)}.btnOk:active{transform:scale(.97)}
-.btnNo{background:transparent;color:var(--no);border:1px solid var(--no);padding:8px 16px;border-radius:10px;font-weight:600;cursor:pointer;transition:all .2s;font-size:13px}
-.btnNo:hover{background:rgba(239,68,68,.1)}.btnNo:active{transform:scale(.97)}
-.btnWn{background:linear-gradient(135deg,var(--a),#D97706);color:#000;border:none;padding:9px 18px;border-radius:10px;font-weight:600;cursor:pointer;transition:all .2s;font-size:13px}
-.btnWn:active{transform:scale(.97)}
-.btnI{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:var(--cd);border:1px solid var(--bd);color:var(--tx);cursor:pointer;transition:all .15s;flex-shrink:0}
-.btnI:hover{background:var(--ch);border-color:var(--pl)}.btnI:active{transform:scale(.92)}
-.inp{width:100%;background:var(--bg);border:1px solid var(--bd);border-radius:9px;padding:9px 13px;color:var(--tx);font-size:13px;outline:none;transition:border .2s}
-.inp:focus{border-color:var(--pl);box-shadow:0 0 0 3px rgba(124,58,237,.1)}
-.inp::placeholder{color:var(--tx3)}
-.gc{background:var(--cd);border:1px solid var(--bd);border-radius:14px;transition:all .25s;overflow:hidden}
-.gc:hover{border-color:rgba(124,58,237,.3)}
-.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:14px;font-size:10px;font-weight:600;gap:3px}
-.bOk{background:rgba(16,185,129,.13);color:var(--ok)}.bWn{background:rgba(245,158,11,.13);color:var(--wn)}.bNo{background:rgba(239,68,68,.13);color:var(--no)}.bPr{background:rgba(124,58,237,.13);color:var(--pl)}
-#toasts{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;max-width:380px}
-.toast{pointer-events:auto;background:var(--cd);border:1px solid var(--bd);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px;animation:toastIn .35s ease-out;box-shadow:0 8px 25px rgba(0,0,0,.4)}
-.toast.out{animation:toastOut .25s ease-in forwards}
-.toastI{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px}
-.toastB{flex:1;min-width:0}.toastT{font-weight:600;font-size:12px}.toastM{font-size:11px;color:var(--tx2);margin-top:1px}
-.sidebar{width:250px;background:var(--bg2);border-right:1px solid var(--bd);height:100vh;position:fixed;left:0;top:0;z-index:200;display:flex;flex-direction:column;padding:16px 0;overflow-y:auto}
-.si{display:flex;align-items:center;gap:10px;padding:10px 20px;cursor:pointer;color:var(--tx2);transition:all .15s;font-size:13px;border-left:3px solid transparent}
-.si:hover{background:rgba(124,58,237,.06);color:var(--tx)}.si.on{background:rgba(124,58,237,.1);color:var(--pl);border-left-color:var(--p)}
-.si i{width:18px;text-align:center;font-size:13px}
-.sc{padding:0 20px;margin-top:16px;margin-bottom:6px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--tx3)}
-.st{background:var(--cd);border:1px solid var(--bd);border-radius:14px;padding:18px;transition:all .25s}
-.st:hover{border-color:var(--pl);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.25)}
-.moOv{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(3px);z-index:500;display:flex;align-items:center;justify-content:center;animation:fadeIn .2s}
-.moCt{background:var(--cd);border:1px solid var(--bd);border-radius:18px;padding:24px;width:520px;max-width:95vw;max-height:90vh;overflow-y:auto;animation:slideUp .3s ease-out}
-.pbar{height:5px;background:var(--bg);border-radius:3px;overflow:hidden}.pfill{height:100%;border-radius:3px;transition:width .4s ease}
-.tbl{width:100%;border-collapse:collapse;font-size:13px}
-.tbl th{text-align:left;padding:10px 12px;font-size:11px;font-weight:600;color:var(--tx3);border-bottom:1px solid var(--bd);text-transform:uppercase;letter-spacing:.5px}
-.tbl td{padding:10px 12px;border-bottom:1px solid rgba(42,37,64,.5)}
-.tbl tr:hover td{background:rgba(124,58,237,.03)}
-.loginOrb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.3}
-@keyframes orbF{0%,100%{transform:translate(0,0)}33%{transform:translate(30px,-20px)}66%{transform:translate(-20px,15px)}}
-.dot{width:7px;height:7px;border-radius:50%;display:inline-block}
-.dot-ok{background:var(--ok)}.dot-wn{background:var(--wn)}.dot-no{background:var(--no)}.dot-off{background:var(--tx3)}
+*{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif}
+body{background:#0C0A15;color:#F8F7FF;display:flex;align-items:center;justify-content:center;min-height:100vh}
+.box{background:#1A1625;border:1px solid #2A2540;border-radius:20px;padding:40px;width:400px;max-width:95vw;text-align:center}
+input{width:100%;background:#0C0A15;border:1px solid #2A2540;border-radius:10px;padding:12px;color:#F8F7FF;font-size:15px;margin-bottom:12px;outline:none}
+input:focus{border-color:#7C3AED}
+button{width:100%;padding:14px;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:10px}
+.entrar{background:#7C3AED;color:#fff}
+.demo{background:#F59E0B;color:#000}
+.error{color:#EF4444;font-size:13px;margin-top:8px;display:none}
 </style>
 </head>
 <body>
-
-<!-- ========== LOGIN ========== -->
-<div id="pg-login" style="min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden">
-  <div class="loginOrb" style="width:350px;height:350px;background:var(--p);top:-60px;left:-60px;animation:orbF 8s ease-in-out infinite"></div>
-  <div class="loginOrb" style="width:280px;height:280px;background:var(--pl);bottom:-40px;right:-40px;animation:orbF 8s ease-in-out infinite;animation-delay:3s"></div>
-  <div class="loginOrb" style="width:180px;height:180px;background:var(--a);top:30%;right:15%;animation:orbF 8s ease-in-out infinite;animation-delay:5s;opacity:.15"></div>
-  <div class="gc aUp" style="padding:40px 36px;width:420px;max-width:95vw;position:relative;z-index:2">
-    <div class="flex justify-center mb-6">
-      <svg viewBox="0 0 220 70" width="200" height="64">
-        <defs><linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#A78BFA"/><stop offset="100%" stop-color="#7C3AED"/></linearGradient></defs>
-        <path d="M28 8C28 8,12 22,12 33C12 42,19 49,28 49C37 49,44 42,44 33C44 22,28 8,28 8Z" fill="url(#g1)"/>
-        <circle cx="28" cy="31" r="6" fill="#fff"/>
-        <line x1="48" y1="24" x2="58" y2="24" stroke="#A78BFA" stroke-width="2.5" stroke-linecap="round"/>
-        <line x1="50" y1="30" x2="64" y2="30" stroke="#7C3AED" stroke-width="2.5" stroke-linecap="round"/>
-        <line x1="48" y1="36" x2="56" y2="36" stroke="#5B21B6" stroke-width="2.5" stroke-linecap="round" opacity=".7"/>
-        <text x="72" y="42" font-family="Outfit" font-weight="900" font-size="30" fill="#F8F7FF">Aky</text>
-        <text x="116" y="42" font-family="Outfit" font-weight="900" font-size="30" fill="url(#g1)">Voy</text>
-        <text x="72" y="54" font-family="Outfit" font-weight="300" font-size="9" fill="#A78BFA" letter-spacing="3.5">PANEL DE CONTROL</text>
-      </svg>
-    </div>
-    <div class="text-center mb-5">
-      <div class="w-14 h-14 rounded-2xl mx-auto mb-3 flex items-center justify-center" style="background:linear-gradient(135deg,var(--p),var(--pd))"><i class="fas fa-shield-halved text-xl" style="color:#fff"></i></div>
-      <h2 class="text-xl font-bold">Acceso Administrativo</h2>
-      <p class="text-xs mt-1" style="color:var(--tx2)">Solo personal autorizado</p>
-    </div>
-    <div class="mb-3"><label class="text-xs font-medium mb-1 block" style="color:var(--tx2)">ID de Administrador</label><input id="lId" class="inp" placeholder="Tu ID"></div>
-    <div class="mb-5"><label class="text-xs font-medium mb-1 block" style="color:var(--tx2)">Contraseña</label><input id="lPass" type="password" class="inp" placeholder="Contraseña de acceso"></div>
-    <button onclick="doLogin()" class="btnP w-full py-3 text-sm"><i class="fas fa-lock mr-2"></i>Ingresar al Panel</button>
-    <p id="lErr" class="text-center text-xs mt-3 hidden" style="color:var(--no)"></p>
+<div class="box">
+  <h2 style="margin-bottom:8px">AkyVoy Panel</h2>
+  <p style="color:#A5A0B8;font-size:13px;margin-bottom:24px">Acceso Administrativo</p>
+  <input id="id" placeholder="ID de Administrador">
+  <input id="pw" type="password" placeholder="Contraseña">
+  <button class="entrar" onclick="login()">Ingresar</button>
+  <button class="demo" onclick="directo()">Entrar Directo (Demo)</button>
+  <div class="error" id="err">Credenciales incorrectas</div>
+  <div id="ok" style="display:none;padding:30px">
+    <div style="font-size:40px;margin-bottom:12px">&#9989;</div>
+    <h3 style="color:#10B981;margin-bottom:8px">Acceso Concedido</h3>
+    <p style="color:#A5A0B8;font-size:13px">Bienvenido Emmanuel. El login funciona correctamente.</p>
+    <p style="color:#6B6580;font-size:12px;margin-top:12px">Si ves esto, el problema no es el login.<br>Reemplaza este archivo con el panel completo.</p>
   </div>
 </div>
-
-<!-- ========== PANEL ========== -->
-<div id="pg-panel" class="hidden">
-  <!-- Sidebar -->
-  <nav class="sidebar" id="sidebar">
-    <div class="px-5 mb-5 flex items-center gap-2">
-      <svg viewBox="0 0 220 70" width="120" height="38"><path d="M28 8C28 8,12 22,12 33C12 42,19 49,28 49C37 49,44 42,44 33C44 22,28 8,28 8Z" fill="url(#g1)"/><circle cx="28" cy="31" r="6" fill="#fff"/><line x1="48" y1="24" x2="58" y2="24" stroke="#A78BFA" stroke-width="2.5" stroke-linecap="round"/><line x1="50" y1="30" x2="64" y2="30" stroke="#7C3AED" stroke-width="2.5" stroke-linecap="round"/><line x1="48" y1="36" x2="56" y2="36" stroke="#5B21B6" stroke-width="2.5" stroke-linecap="round" opacity=".7"/><text x="72" y="42" font-family="Outfit" font-weight="900" font-size="26" fill="#F8F7FF">Aky<tspan fill="#A78BFA">Voy</tspan></text></svg>
-    </div>
-    <div class="sc">Principal</div>
-    <div class="si on" onclick="goSec('dashboard',this)"><i class="fas fa-chart-line"></i>Dashboard</div>
-    <div class="si" onclick="goSec('users',this)"><i class="fas fa-users"></i>Usuarios</div>
-    <div class="si" onclick="goSec('restaurants',this)"><i class="fas fa-store"></i>Comedores</div>
-    <div class="si" onclick="goSec('drivers',this)"><i class="fas fa-motorcycle"></i>Repartidores</div>
-    <div class="si" onclick="goSec('orders',this)"><i class="fas fa-clipboard-list"></i>Pedidos</div>
-    <div class="sc">Sistema</div>
-    <div class="si" onclick="goSec('finance',this)"><i class="fas fa-dollar-sign"></i>Finanzas</div>
-    <div class="si" onclick="goSec('notifs',this)"><i class="fas fa-bell"></i>Notificaciones</div>
-    <div class="si" onclick="goSec('contracts',this)"><i class="fas fa-file-contract"></i>Contratos</div>
-    <div class="si" onclick="goSec('settings',this)"><i class="fas fa-gear"></i>Configuración</div>
-    <div class="mt-auto px-4 pt-4 border-t" style="border-color:var(--bd)">
-      <div class="flex items-center gap-3 mb-3"><div class="w-9 h-9 rounded-full flex items-center justify-center" style="background:var(--pd)"><i class="fas fa-user-shield text-sm" style="color:var(--pl)"></i></div><div><div class="text-sm font-semibold">Emmanuel</div><div class="text-xs" style="color:var(--tx3)">Super Admin</div></div></div>
-      <button onclick="document.getElementById('lId').value='Emmanuel';document.getElementById('lPass').value='Torres2515';doLogin()" class="btnP w-full mb-3 py-3" style="background:linear-gradient(135deg,#F59E0B,#D97706);color:#000"><i class="fas fa-bolt mr-2"></i>ENTRAR DIRECTO</button>
-      <button onclick="logout()" class="btnS w-full text-xs"><i class="fas fa-right-from-bracket mr-1"></i>Cerrar Sesión</button>
-    </div>
-  </nav>
-
-  <!-- Main -->
-  <main style="margin-left:250px;min-height:100vh;padding:24px 28px">
-    <div class="flex items-center justify-between mb-6">
-      <div><h1 class="text-2xl font-bold" id="secTitle">Dashboard</h1><p class="text-sm" style="color:var(--tx2)" id="secSub">Vista general del sistema AkyVoy</p></div>
-      <div class="flex items-center gap-3">
-        <span class="text-xs" style="color:var(--tx3)" id="panelDate"></span>
-        <button class="btnI" onclick="renderNotifs()"><i class="fas fa-bell text-sm"></i></button>
-      </div>
-    </div>
-    <div id="s-dashboard" class="sec"></div>
-    <div id="s-users" class="sec hidden"></div>
-    <div id="s-restaurants" class="sec hidden"></div>
-    <div id="s-drivers" class="sec hidden"></div>
-    <div id="s-orders" class="sec hidden"></div>
-    <div id="s-finance" class="sec hidden"></div>
-    <div id="s-notifs" class="sec hidden"></div>
-    <div id="s-contracts" class="sec hidden"></div>
-    <div id="s-settings" class="sec hidden"></div>
-  </main>
-</div>
-
-<div id="toasts"></div>
-<div id="modal"></div>
-
 <script>
-/* ============================================================
-   AkyVoy PANEL DE CONTROL
-   Credenciales: ID=Emmanuel, Pass=Torres2515
-   ============================================================ */
-
-// BroadcastChannel
-const BC=new BroadcastChannel('akyvoy_channel');
-BC.onmessage=function(e){
-  const d=e.data;if(!d||d.to!=='panel')return;
-  switch(d.type){
-    case 'menu_updated': addNotif('Menú Actualizado','Comedor '+d.restId+' actualizó su menú','info'); renderNotifs(); break;
-    case 'new_order_sys': addNotif('Nuevo Pedido',d.orderCode+' - $'+d.total,'ok'); renderNotifs(); renderOrders(); break;
-  }
-};
-function sendMsg(to,type,data={}){BC.postMessage({from:'panel',to,type,...data})}
-
-// Estado
-const S={
-  users:loadD('aky_p_users',genUsers()),
-  restaurants:loadD('aky_p_rests',genRests()),
-  drivers:loadD('aky_p_drvs',genDrivers()),
-  allOrders:loadD('aky_p_orders',genOrders()),
-  notifs:loadD('aky_p_notifs',genNotifs()),
-  settings:{appName:'AkyVoy',commRate:2,monthlyFee:29.99,radius:10,currency:'USD',darkMode:true},
-};
-
-function loadD(k,def){try{const v=localStorage.getItem(k);return v?JSON.parse(v):def}catch(e){return def}}
-function saveD(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
-
-function genUsers(){return[
-  {id:1,name:'María García',email:'maria@email.com',phone:'+1 555-0101',orders:18,spent:245,status:'active',joined:'2024-11-15'},
-  {id:2,name:'Juan Pérez',email:'juan@email.com',phone:'+1 555-0102',orders:32,spent:520,status:'active',joined:'2024-10-02'},
-  {id:3,name:'Ana López',email:'ana@email.com',phone:'+1 555-0103',orders:8,spent:95,status:'active',joined:'2025-01-10'},
-  {id:4,name:'Pedro Martínez',email:'pedro@email.com',phone:'+1 555-0104',orders:45,spent:780,status:'active',joined:'2024-08-20'},
-  {id:5,name:'Laura Hernández',email:'laura@email.com',phone:'+1 555-0105',orders:3,spent:38,status:'inactive',joined:'2025-01-20'},
-  {id:6,name:'Diego Ramírez',email:'diego@email.com',phone:'+1 555-0106',orders:27,spent:410,status:'active',joined:'2024-09-05'},
-  {id:7,name:'Sofía Castillo',email:'sofia@email.com',phone:'+1 555-0107',orders:0,spent:0,status:'inactive',joined:'2025-01-28'},
-  {id:8,name:'Carlos Vargas',email:'carlos@email.com',phone:'+1 555-0108',orders:15,spent:198,status:'active',joined:'2024-12-01'},
-]}
-
-function genRests(){return[
-  {id:1,code:'COM-0001',name:'Sabor Criollo',owner:'Roberto Sánchez',phone:'+1 555-1001',addr:'Calle Principal #45',menu:12,rating:4.8,orders:234,income:4850,status:'active',paid:true,expires:'2025-02-15',contract:true,type:'fijo',drivers:['REP-0040','REP-0041']},
-  {id:2,code:'COM-0002',name:'Pizza Rex',owner:'Marco Rossi',phone:'+1 555-1002',addr:'Av. Industrial #120',menu:8,rating:4.6,orders:189,income:3780,status:'active',paid:true,expires:'2025-02-28',contract:true,type:'fijo',drivers:['REP-0042']},
-  {id:3,code:'COM-0003',name:'Sushi Lover',owner:'Yuki Tanaka',phone:'+1 555-1003',addr:'Centro Comercial #8',menu:6,rating:4.9,orders:156,income:3120,status:'active',paid:true,expires:'2025-03-10',contract:true,type:'mixto',drivers:['REP-0040']},
-  {id:4,code:'COM-0004',name:'Burger House',owner:'James Wilson',phone:'+1 555-1004',addr:'Carrera 15 #78-32',menu:10,rating:4.5,orders:312,income:6240,status:'active',paid:false,expires:'2025-01-30',contract:false,type:'mixto',drivers:[]},
-  {id:5,code:'COM-0005',name:'Jugo Express',owner:'Carmen Ruiz',phone:'+1 555-1005',addr:'Parque Central K-3',menu:5,rating:4.7,orders:89,income:1335,status:'suspended',paid:false,expires:'2025-01-05',contract:true,type:'abierto',drivers:[]},
-  {id:6,code:'COM-0006',name:'El Rincón Paisa',owner:'Gloria Mendoza',phone:'+1 555-1006',addr:'Barrio Antiguo #22',menu:0,rating:0,orders:0,income:0,status:'pending',paid:false,expires:null,contract:false,type:'pendiente',drivers:[]},
-]}
-
-function genDrivers(){return[
-  {id:1,code:'REP-0040',name:'Miguel Torres',phone:'+1 555-2001',vehicle:'Moto',delivered:245,rating:4.9,status:'approved',type:'fijo',commission:0,balance:320,assignedRest:'COM-0001',joined:'2024-06-15'},
-  {id:2,code:'REP-0041',name:'Andrés López',phone:'+1 555-2002',vehicle:'Moto',delivered:198,rating:4.7,status:'approved',type:'fijo',commission:0,balance:256,assignedRest:'COM-0001',joined:'2024-07-01'},
-  {id:3,code:'REP-0042',name:'Carlos Mendoza',phone:'+1 555-2003',vehicle:'Moto',delivered:312,rating:4.9,status:'approved',type:'comisionable',commission:50,balance:147.50,assignedRest:null,joined:'2024-08-10'},
-  {id:4,code:'REP-0043',name:'Fernando Gil',phone:'+1 555-2004',vehicle:'Moto',delivered:0,rating:0,status:'pending',type:'comisionable',commission:0,balance:0,assignedRest:null,joined:'2025-01-28'},
-  {id:5,code:'REP-0044',name:'Roberto Díaz',phone:'+1 555-2005',vehicle:'Bicicleta',delivered:0,rating:0,status:'pending',type:'comisionable',commission:0,balance:0,assignedRest:null,joined:'2025-01-29'},
-  {id:6,code:'REP-0045',name:'Javier Peña',phone:'+1 555-2006',vehicle:'Moto',delivered:156,rating:4.3,status:'rejected',type:'comisionable',commission:0,balance:0,assignedRest:null,joined:'2025-01-15'},
-  {id:7,code:'REP-0046',name:'David Quintero',phone:'+1 555-2007',vehicle:'Moto',delivered:89,rating:4.6,status:'approved',type:'comisionable',commission:25,balance:78,assignedRest:null,joined:'2024-11-20'},
-  {id:8,code:'REP-0047',name:'Santiago Rojas',phone:'+1 555-2008',vehicle:'Auto',delivered:0,rating:0,status:'pending',type:'comisionable',commission:0,balance:0,assignedRest:null,joined:'2025-01-30'},
-]}
-
-function genOrders(){const st=['delivered','delivered','delivered','delivered','delivered','delivered','delivering','accepted','pending','cancelled'];const rests=S.restaurants.filter(r=>r.status==='active');const orders=[];for(let i=0;i<30;i++){const r=rests[Math.floor(Math.random()*rests.length)];orders.push({code:'AK-'+(1100+i),rest:r.name,restCode:r.code,items:['Bandeja Paisa x1','Pizza x2','Sushi x3','Burger x1','Jugo x4'][Math.floor(Math.random()*5)],total:parseFloat((Math.random()*30+5).toFixed(2)),status:st[Math.floor(Math.random()*st.length)],client:['María G.','Juan P.','Ana L.','Pedro M.','Diego R.','Sofía H.'][Math.floor(Math.random()*6)],driver:['Carlos M.','Miguel T.','Andrés L.','David Q.'][Math.floor(Math.random()*4)],time:`${8+Math.floor(Math.random()*10)}:${String(Math.floor(Math.random()*60)).padStart(2,'0')}`,date:'2025-01-'+String(25+Math.floor(Math.random()*6)).padStart(2,'0'),commission:parseFloat((Math.random()*1).toFixed(2))})}return orders}
-
-function genNotifs(){return[
-  {id:1,title:'Nuevo repartidor solicitante',msg:'Fernando Gil (REP-0043) solicitó acceso',type:'wn',time:'Hace 15 min',read:false},
-  {id:2,title:'Mensualidad vencida',msg:'Burger House (COM-0004) no ha pagado',type:'no',time:'Hace 1 hora',read:false},
-  {id:3,title:'Contrato firmado',msg:'El Rincón Paisa firmó el contrato',type:'ok',time:'Hace 2 horas',read:true},
-  {id:4,title:'Repartidor rechazado',msg:'Javier Peña fue rechazado automáticamente',type:'no',time:'Hace 3 horas',read:true},
-  {id:5,title:'Comedor suspendido',msg:'Jugo Express fue suspendido por falta de pago',type:'no',time:'Ayer',read:true},
-]}
-
-// Toast
-function showToast(t,m,type='info'){
-  const c=document.getElementById('toasts');const col={info:'var(--p)',ok:'var(--ok)',wn:'var(--wn)',no:'var(--no)'};
-  const ico={info:'fa-bell',ok:'fa-check-circle',wn:'fa-exclamation-triangle',no:'fa-times-circle'};
-  const el=document.createElement('div');el.className='toast';
-  el.innerHTML=`<div class="toastI" style="background:${col[type]}22;color:${col[type]}"><i class="fas ${ico[type]}"></i></div><div class="toastB"><div class="toastT">${t}</div><div class="toastM">${m}</div></div>`;
-  c.appendChild(el);setTimeout(()=>{el.classList.add('out');setTimeout(()=>el.remove(),250)},4000);
-}
-function addNotif(t,m,type){S.notifs.unshift({id:Date.now(),title:t,msg:m,type,time:'Ahora',read:false});saveD('aky_p_notifs',S.notifs)}
-
-function openModal(html){document.getElementById('modal').innerHTML=`<div class="moOv" onclick="if(event.target===this)closeModal()"><div class="moCt">${html}</div></div>`}
-function closeModal(){document.getElementById('modal').innerHTML=''}
-
-// Login
-function doLogin(){
-  const id=document.getElementById('lId').value.trim();
-  const pass=document.getElementById('lPass').value;
-  const err=document.getElementById('lErr');
-  if(id==='Emmanuel'&&pass==='Torres2515'){
-    document.getElementById('pg-login').classList.add('hidden');
-    document.getElementById('pg-panel').classList.remove('hidden');
-    initPanel();
+function login(){
+  var i=document.getElementById('id').value.trim();
+  var p=document.getElementById('pw').value;
+  if(i==='Emmanuel' && p==='Torres2515'){
+    document.getElementById('ok').style.display='block';
+    document.querySelector('.box').querySelector('h2').style.display='none';
+    document.querySelector('.box').querySelector('p').style.display='none';
+    document.getElementById('id').style.display='none';
+    document.getElementById('pw').style.display='none';
+    document.querySelector('.entrar').style.display='none';
+    document.querySelector('.demo').style.display='none';
+    document.getElementById('err').style.display='none';
   } else {
-    err.textContent='Credenciales incorrectas. Solo personal autorizado.';err.classList.remove('hidden');
+    document.getElementById('err').style.display='block';
   }
 }
-function logout(){document.getElementById('pg-panel').classList.add('hidden');document.getElementById('pg-login').classList.remove('hidden');document.getElementById('lPass').value='';document.getElementById('lErr').classList.add('hidden')}
-
-function initPanel(){
-  document.getElementById('panelDate').textContent=new Date().toLocaleDateString('es',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-  renderDashboard();renderUsers();renderRestaurants();renderDrivers();renderOrders();renderFinance();renderNotifs();renderContracts();renderSettings();
+function directo(){
+  document.getElementById('id').value='Emmanuel';
+  document.getElementById('pw').value='Torres2515';
+  login();
 }
-
-// Navegación
-function goSec(sec,el){
-  document.querySelectorAll('.sec').forEach(s=>s.classList.add('hidden'));
-  document.getElementById('s-'+sec).classList.remove('hidden');
-  document.querySelectorAll('.si').forEach(s=>s.classList.remove('on'));
-  if(el)el.classList.add('on');
-  const titles={dashboard:['Dashboard','Vista general del sistema'],users:['Usuarios','Gestión de clientes registrados'],restaurants:['Comedores','Gestión de restaurantes y comedores'],drivers:['Repartidores','Aprobación y gestión de repartidores'],orders:['Pedidos','Todos los pedidos del sistema'],finance:['Finanzas','Ingresos, comisiones y mensualidades'],notifs:['Notificaciones','Centro de alertas y eventos'],contracts:['Contratos','Gestión de contratos con comedores'],settings:['Configuración','Ajustes generales del sistema']};
-  const t=titles[sec]||['',''];
-  document.getElementById('secTitle').textContent=t[0];document.getElementById('secSub').textContent=t[1];
-}
-
-// === DASHBOARD ===
-function renderDashboard(){
-  const el=document.getElementById('s-dashboard');
-  const activeRests=S.restaurants.filter(r=>r.status==='active').length;
-  const activeDrvs=S.drivers.filter(d=>d.status==='approved').length;
-  const pendingDrvs=S.drivers.filter(d=>d.status==='pending').length;
-  const monthOrders=S.allOrders.length;
-  const monthIncome=S.allOrders.reduce((s,o)=>s+o.total,0);
-  const monthComm=S.allOrders.reduce((s,o)=>s+o.commission,0);
-  const unpaidRests=S.restaurants.filter(r=>!r.paid&&r.status!=='pending').length;
-
-  el.innerHTML=`
-    <!-- Stats -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-      <div class="st aUp"><div class="flex items-center gap-3 mb-2"><div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(124,58,237,.13)"><i class="fas fa-users" style="color:var(--pl)"></i></div></div><div class="text-2xl font-bold">${S.users.length}</div><div class="text-xs" style="color:var(--tx3)">Usuarios Registrados</div><div class="text-xs mt-1" style="color:var(--ok)"><i class="fas fa-arrow-up"></i> +${S.users.filter(u=>u.status==='active').length} activos</div></div>
-      <div class="st aUp d1"><div class="flex items-center gap-3 mb-2"><div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(245,158,11,.13)"><i class="fas fa-store" style="color:var(--a)"></i></div></div><div class="text-2xl font-bold">${activeRests}</div><div class="text-xs" style="color:var(--tx3)">Comedores Activos</div><div class="text-xs mt-1" style="color:${unpaidRests?'var(--no)':'var(--ok)'}"><i class="fas fa-${unpaidRests?'exclamation-triangle':'check'}"></i> ${unpaidRests?'Sin pagar':'Todos al día'}</div></div>
-      <div class="st aUp d2"><div class="flex items-center gap-3 mb-2"><div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(16,185,129,.13)"><i class="fas fa-motorcycle" style="color:var(--ok)"></i></div></div><div class="text-2xl font-bold">${activeDrvs}</div><div class="text-xs" style="color:var(--tx3)">Repartidores</div><div class="text-xs mt-1" style="color:var(--wn)"><i class="fas fa-clock"></i> ${pendingDrvs} pendientes</div></div>
-      <div class="st aUp d3"><div class="flex items-center gap-3 mb-2"><div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(239,68,68,.13)"><i class="fas fa-clipboard-list" style="color:var(--no)"></i></div></div><div class="text-2xl font-bold">${monthOrders}</div><div class="text-xs" style="color:var(--tx3)">Pedidos del Período</div><div class="text-xs mt-1" style="color:var(--ok)"><i class="fas fa-dollar-sign"></i> $${monthIncome.toFixed(0)}</div></div>
-    </div>
-
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
-      <!-- Gráfico de pedidos -->
-      <div class="st col-span-2 aUp d2">
-        <div class="flex items-center justify-between mb-4"><h4 class="font-semibold text-sm">Pedidos por Día</h4><span class="badge bPr">Últimos 7 días</span></div>
-        <canvas id="chartOrders" height="180" style="width:100%"></canvas>
-      </div>
-      <!-- Distribución -->
-      <div class="st aUp d3">
-        <h4 class="font-semibold text-sm mb-4">Distribución de Ingresos</h4>
-        <canvas id="chartDist" height="180" style="width:100%"></canvas>
-      </div>
-    </div>
-
-    <!-- Alertas rápidas -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
-      <div class="st aUp d4">
-        <h4 class="font-semibold text-sm mb-3"><i class="fas fa-exclamation-triangle mr-1" style="color:var(--wn)"></i>Alertas Activas</h4>
-        <div class="space-y-2">
-          ${pendingDrvs?`<div class="flex items-center gap-2 p-2 rounded-lg text-sm" style="background:rgba(245,158,11,.06)"><span class="dot dot-wn"></span><span>${pendingDrvs} repartidores esperando aprobación</span><button onclick="goSec('drivers',document.querySelectorAll('.si')[3])" class="ml-auto btnP btn-sm" style="padding:4px 10px;font-size:11px">Revisar</button></div>`:''}
-          ${unpaidRests?`<div class="flex items-center gap-2 p-2 rounded-lg text-sm" style="background:rgba(239,68,68,.06)"><span class="dot dot-no"></span><span>${unpaidRests} comedor(es) con mensualidad pendiente</span><button onclick="goSec('restaurants',document.querySelectorAll('.si')[2])" class="ml-auto btnNo btn-sm" style="padding:4px 10px;font-size:11px">Ver</button></div>`:''}
-          <div class="flex items-center gap-2 p-2 rounded-lg text-sm" style="background:rgba(16,185,129,.06)"><span class="dot dot-ok"></span><span>Sistema funcionando normalmente</span></div>
-        </div>
-      </div>
-      <div class="st aUp d5">
-        <h4 class="font-semibold text-sm mb-3"><i class="fas fa-clock-rotate-left mr-1" style="color:var(--pl)"></i>Últimos Pedidos</h4>
-        <div class="space-y-1.5">${S.allOrders.slice(0,5).map(o=>{const sm={delivered:{c:'dot-ok',t:'Entregado'},delivering:{c:'dot-wn',t:'En camino'},accepted:{c:'dot-wn',t:'Aceptado'},pending:{c:'dot-wn',t:'Pendiente'},cancelled:{c:'dot-no',t:'Cancelado'}};const s=sm[o.status]||sm.pending;return`<div class="flex items-center gap-2 text-xs p-1.5"><span class="dot ${s.c}"></span><span class="font-mono font-medium" style="color:var(--pl)">${o.code}</span><span class="flex-1 truncate" style="color:var(--tx2)">${o.rest}</span><span class="font-medium">$${o.total.toFixed(2)}</span></div>`}).join('')}</div>
-      </div>
-    </div>
-
-    <!-- Resumen financiero rápido -->
-    <div class="grid grid-cols-3 gap-4">
-      <div class="st text-center aUp d6"><div class="text-xs mb-1" style="color:var(--tx3)">Ingresos por Pedidos</div><div class="text-xl font-bold" style="color:var(--ok)">$${monthIncome.toFixed(0)}</div></div>
-      <div class="st text-center aUp d7"><div class="text-xs mb-1" style="color:var(--tx3)">Comisiones Repartidores</div><div class="text-xl font-bold" style="color:var(--a)">$${monthComm.toFixed(0)}</div></div>
-      <div class="st text-center aUp d8"><div class="text-xs mb-1" style="color:var(--tx3)">Mensualidades Comedores</div><div class="text-xl font-bold" style="color:var(--pl)">$${(activeRests*S.settings.monthlyFee).toFixed(0)}</div></div>
-    </div>
-  `;
-  drawCharts();
-}
-
-function drawCharts(){
-  // Gráfico de barras - pedidos por día
-  const c1=document.getElementById('chartOrders');if(!c1)return;
-  const ctx1=c1.getContext('2d');const w=c1.width=c1.offsetWidth*2;c1.height=360;ctx1.scale(1,1);
-  const days=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];const vals=[32,45,38,52,41,58,48];const mx=Math.max(...vals);
-  ctx1.clearRect(0,0,w,360);
-  // Grid
-  for(let i=0;i<4;i++){const y=30+i*75;ctx1.strokeStyle='rgba(42,37,64,.5)';ctx1.lineWidth=1;ctx1.beginPath();ctx1.moveTo(50,y);ctx1.lineTo(w-20,y);ctx1.stroke();ctx1.fillStyle='#6B6580';ctx1.font='18px Outfit';ctx1.textAlign='right';ctx1.fillText(Math.round(mx-mx/3*i),45,y+5)}
-  // Barras
-  const bw=Math.max(20,(w-100)/7*.6);const gap=(w-100)/7;
-  vals.forEach((v,i)=>{
-    const x=70+i*gap;const h=Math.max(4,v/mx*280);const y=310-h;
-    const gr=ctx1.createLinearGradient(x,y,x,310);gr.addColorStop(0,'#7C3AED');gr.addColorStop(1,'#5B21B6');
-    ctx1.fillStyle=gr;ctx1.beginPath();ctx1.roundRect(x,y,bw,h,6);ctx1.fill();
-    ctx1.fillStyle='#A5A0B8';ctx1.font='18px Outfit';ctx1.textAlign='center';ctx1.fillText(days[i],x+bw/2,340);
-    ctx1.fillStyle='#F8F7FF';ctx1.font='bold 18px Outfit';ctx1.fillText(v,x+bw/2,y-8);
-  });
-
-  // Gráfico de dona - distribución
-  const c2=document.getElementById('chartDist');if(!c2)return;
-  const ctx2=c2.getContext('2d');c2.width=c2.offsetWidth*2;c2.height=360;
-  const data=[{l:'Pedidos',v:65,c:'#7C3AED'},{l:'Mensualidad',v:20,c:'#F59E0B'},{l:'Comisiones',v:15,c:'#10B981'}];
-  const cx2=c2.width/2,cy2=170,r=110;let angle=-Math.PI/2;
-  data.forEach(d=>{
-    const slice=d.v/100*Math.PI*2;
-    ctx2.fillStyle=d.c;ctx2.beginPath();ctx2.moveTo(cx2,cy2);ctx2.arc(cx2,cy2,r,angle,angle+slice);ctx2.closePath();ctx2.fill();
-    angle+=slice;
-  });
-  ctx2.fillStyle=getComputedStyle(document.body).getPropertyValue('--cd').trim()||'#1A1625';ctx2.beginPath();ctx2.arc(cx2,cy2,r*.55,0,Math.PI*2);ctx2.fill();
-  ctx2.fillStyle='#F8F7FF';ctx2.font='bold 28px Outfit';ctx2.textAlign='center';ctx2.fillText('$12.4K',cx2,cy2+10);
-  // Leyenda
-  data.forEach((d,i)=>{const ly=320+i*28;ctx2.fillStyle=d.c;ctx2.beginPath();ctx2.roundRect(cx2-80,ly-6,12,12,3);ctx2.fill();ctx2.fillStyle='#A5A0B8';ctx2.font='18px Outfit';ctx2.textAlign='left';ctx2.fillText(d.l+' '+d.v+'%',cx2-62,ly+5)});
-}
-
-// === USUARIOS ===
-function renderUsers(q=''){
-  const el=document.getElementById('s-users');
-  let f=S.users;if(q)f=f.filter(u=>u.name.toLowerCase().includes(q.toLowerCase())||u.email.toLowerCase().includes(q.toLowerCase()));
-  el.innerHTML=`<div class="mb-4 flex items-center gap-3"><input class="inp" style="max-width:300px" placeholder="Buscar usuarios..." value="${q}" oninput="renderUsers(this.value)"><span class="text-xs" style="color:var(--tx3)">${f.length} usuarios</span></div>
-  <div class="gc overflow-hidden"><table class="tbl"><thead><tr><th>Usuario</th><th>Contacto</th><th>Pedidos</th><th>Gastado</th><th>Estado</th><th>Registro</th><th>Acciones</th></tr></thead><tbody>${f.map(u=>`<tr><td><div class="flex items-center gap-2"><div class="w-8 h-8 rounded-full flex items-center justify-center" style="background:var(--pd)"><i class="fas fa-user text-xs" style="color:var(--pl)"></i></div><div><div class="font-medium text-sm">${u.name}</div><div class="text-xs" style="color:var(--tx3)">${u.email}</div></div></div></td><td class="text-xs" style="color:var(--tx2)">${u.phone}</td><td class="font-medium">${u.orders}</td><td class="font-medium">$${u.spent}</td><td><span class="badge ${u.status==='active'?'bOk':'bNo'}">${u.status==='active'?'Activo':'Inactivo'}</span></td><td class="text-xs" style="color:var(--tx3)">${u.joined}</td><td><button class="btnI" style="width:28px;height:28px" onclick="showToast('Detalle','Ver perfil de ${u.name}','info')"><i class="fas fa-eye" style="font-size:10px"></i></button></td></tr>`).join('')}</tbody></table></div>`;
-}
-
-// === COMEDORES ===
-function renderRestaurants(){
-  const el=document.getElementById('s-restaurants');
-  const active=S.restaurants.filter(r=>r.status==='active');
-  const suspended=S.restaurants.filter(r=>r.status==='suspended');
-  const pending=S.restaurants.filter(r=>r.status==='pending');
-  el.innerHTML=`
-    <div class="grid grid-cols-3 gap-4 mb-6">
-      <div class="st aUp"><div class="text-2xl font-bold" style="color:var(--ok)">${active.length}</div><div class="text-xs" style="color:var(--tx3)">Activos</div></div>
-      <div class="st aUp d1"><div class="text-2xl font-bold" style="color:var(--wn)">${suspended.length}</div><div class="text-xs" style="color:var(--tx3)">Suspendidos</div></div>
-      <div class="st aUp d2"><div class="text-2xl font-bold" style="color:var(--pl)">${pending.length}</div><div class="text-xs" style="color:var(--tx3)">Pendientes</div></div>
-    </div>
-    <div class="gc overflow-hidden"><table class="tbl"><thead><tr><th>Comedor</th><th>Propietario</th><th>Mensualidad</th><th>Pedidos</th><th>Ingresos</th><th>Tipo</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>${S.restaurants.map(r=>{
-      const stMap={active:{b:'bOk',t:'Activo'},suspended:{b:'bNo',t:'Suspendido'},pending:{b:'bWn',t:'Pendiente'}};
-      const st=stMap[r.status]||stMap.pending;
-      const daysLeft=r.expires?Math.max(0,Math.ceil((new Date(r.expires)-new Date())/(86400000))):0;
-      return`<tr><td><div class="font-medium text-sm">${r.name}</div><div class="text-xs" style="color:var(--tx3)">${r.code}</div></td><td class="text-sm">${r.owner}</td><td><span class="badge ${r.paid?'bOk':'bNo'}">${r.paid?'Pagada':'Pendiente'}</span>${daysLeft?`<div class="text-xs mt-0.5" style="color:${daysLeft<=7?'var(--no)':'var(--tx3)'}">${daysLeft}d restantes</div>`:''}</td><td class="font-medium">${r.orders}</td><td class="font-medium">$${r.income}</td><td><span class="badge ${r.type==='fijo'?'bOk':r.type==='mixto'?'bWn':'bPr'}">${r.type}</span></td><td><span class="badge ${st.b}">${st.t}</span></td><td><div class="flex gap-1">${r.status==='pending'?`<button class="btnOk btn-sm" style="padding:4px 10px;font-size:11px" onclick="approveRest(${r.id})"><i class="fas fa-check"></i></button><button class="btnNo btn-sm" style="padding:4px 10px;font-size:11px" onclick="rejectRest(${r.id})"><i class="fas fa-times"></i></button>`:r.status==='active'?`<button class="btnS btn-sm" style="padding:4px 10px;font-size:11px" onclick="togglePayRest(${r.id})"><i class="fas fa-dollar-sign"></i></button><button class="btnNo btn-sm" style="padding:4px 10px;font-size:11px" onclick="suspendRest(${r.id})"><i class="fas fa-ban"></i></button>`:`<button class="btnOk btn-sm" style="padding:4px 10px;font-size:11px" onclick="reactivateRest(${r.id})"><i class="fas fa-undo"></i></button>`}<button class="btnI" style="width:28px;height:28px" onclick="showRestDetail(${r.id})"><i class="fas fa-eye" style="font-size:10px"></i></button></div></td></tr>`}).join('')}</tbody></table></div>`;
-}
-
-function approveRest(id){const r=S.restaurants.find(x=>x.id===id);if(r){r.status='active';r.paid=true;r.expires=new Date(Date.now()+30*86400000).toISOString().split('T')[0];saveD('aky_p_rests',S.restaurants);addNotif('Comedor Aprobado',r.name+' ('+r.code+') fue aprobado','ok');renderRestaurants();renderDashboard();showToast('Aprobado',r.name+' ahora está activo','ok')}}
-function rejectRest(id){const r=S.restaurants.find(x=>x.id===id);if(r){r.status='rejected';saveD('aky_p_rests',S.restaurants);renderRestaurants();showToast('Rechazado',r.name+' fue rechazado','no')}}
-function suspendRest(id){const r=S.restaurants.find(x=>x.id===id);if(r){r.status='suspended';saveD('aky_p_rests',S.restaurants);addNotif('Comedor Suspendido',r.name+' fue suspendido','no');renderRestaurants();renderDashboard();showToast('Suspendido',r.name+' fue suspendido','wn');sendMsg('restaurant','access_denied',{reason:'Mensualidad pendiente'})}}
-function reactivateRest(id){const r=S.restaurants.find(x=>x.id===id);if(r){r.status='active';r.paid=true;r.expires=new Date(Date.now()+30*86400000).toISOString().split('T')[0];saveD('aky_p_rests',S.restaurants);renderRestaurants();renderDashboard();showToast('Reactivado',r.name+' está activo de nuevo','ok')}}
-function togglePayRest(id){const r=S.restaurants.find(x=>x.id===id);if(r){r.paid=!r.paid;if(r.paid)r.expires=new Date(Date.now()+30*86400000).toISOString().split('T')[0];saveD('aky_p_rests',S.restaurants);renderRestaurants();renderDashboard();showToast(r.paid?'Pago Registrado':'Pago Revertido',r.name,r.paid?'ok':'wn')}}
-
-function showRestDetail(id){
-  const r=S.restaurants.find(x=>x.id===id);if(!r)return;
-  const drvNames=r.drivers.map(d=>{const dr=S.drivers.find(x=>x.code===d);return dr?dr.name:d}).join(', ')||'Ninguno asignado';
-  openModal(`<h3 class="font-bold text-lg mb-4"><i class="fas fa-store mr-2" style="color:var(--a)"></i>${r.name}</h3>
-    <div class="grid grid-cols-2 gap-3 text-sm mb-4">
-      <div><span style="color:var(--tx3)">Código:</span> <span class="font-medium">${r.code}</span></div>
-      <div><span style="color:var(--tx3)">Propietario:</span> <span class="font-medium">${r.owner}</span></div>
-      <div><span style="color:var(--tx3)">Teléfono:</span> ${r.phone}</div>
-      <div><span style="color:var(--tx3)">Dirección:</span> ${r.addr}</div>
-      <div><span style="color:var(--tx3)">Platos menú:</span> ${r.menu}</div>
-      <div><span style="color:var(--tx3)">Rating:</span> <span style="color:var(--a)"><i class="fas fa-star"></i> ${r.rating}</span></div>
-      <div><span style="color:var(--tx3)">Pedidos:</span> ${r.orders}</div>
-      <div><span style="color:var(--tx3)">Ingresos:</span> <span class="font-bold" style="color:var(--ok)">$${r.income}</span></div>
-      <div><span style="color:var(--tx3)">Tipo red:</span> <span class="badge ${r.type==='fijo'?'bOk':r.type==='mixto'?'bWn':'bPr'}">${r.type}</span></div>
-      <div><span style="color:var(--tx3)">Contrato:</span> <span class="badge ${r.contract?'bOk':'bNo'}">${r.contract?'Firmado':'Pendiente'}</span></div>
-      <div class="col-span-2"><span style="color:var(--tx3)">Repartidores fijos:</span> ${drvNames}</div>
-    </div>
-    <button onclick="closeModal()" cla
+</script>
+</body>
+</html>
