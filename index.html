@@ -117,6 +117,7 @@ input,textarea,select,button{font-family:inherit}
     <div class="si" onclick="goSec('settings',this)"><i class="fas fa-gear"></i>Configuración</div>
     <div class="mt-auto px-4 pt-4 border-t" style="border-color:var(--bd)">
       <div class="flex items-center gap-3 mb-3"><div class="w-9 h-9 rounded-full flex items-center justify-center" style="background:var(--pd)"><i class="fas fa-user-shield text-sm" style="color:var(--pl)"></i></div><div><div class="text-sm font-semibold">Emmanuel</div><div class="text-xs" style="color:var(--tx3)">Super Admin</div></div></div>
+      <button onclick="document.getElementById('lId').value='Emmanuel';document.getElementById('lPass').value='Torres2515';doLogin()" class="btnP w-full mb-3 py-3" style="background:linear-gradient(135deg,#F59E0B,#D97706);color:#000"><i class="fas fa-bolt mr-2"></i>ENTRAR DIRECTO</button>
       <button onclick="logout()" class="btnS w-full text-xs"><i class="fas fa-right-from-bracket mr-1"></i>Cerrar Sesión</button>
     </div>
   </nav>
