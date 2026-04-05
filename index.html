@@ -499,5 +499,7 @@ function renderSettings(){
 function saveSet(){SETTINGS.commRate=parseFloat(document.getElementById('sC').value);SETTINGS.monthlyFee=parseFloat(document.getElementById('sF').value);SETTINGS.radius=parseInt(document.getElementById('sR').value);SETTINGS.currency=document.getElementById('sU').value;toast('Guardado','Configuración actualizada','ok');renderFinance()}
 function changePw(){var p1=document.getElementById('nP1').value;var p2=document.getElementById('nP2').value;if(!p1||p1.length<6){toast('Error','Mínimo 6 caracteres','no');return}if(p1!==p2){toast('Error','No coinciden','no');return}document.getElementById('nP1').value='';document.getElementById('nP2').value='';toast('Cambiada','Recuerda tu nueva contraseña','ok')}
 </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="conexion.js"></script>
 </body>
 </html>
