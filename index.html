@@ -2,530 +2,129 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>AkyVoy - Panel de Control</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{--p:#7C3AED;--pd:#5B21B6;--pl:#A78BFA;--pll:#C4B5FD;--a:#F59E0B;--bg:#0C0A15;--bg2:#13101F;--cd:#1A1625;--ch:#231E33;--tx:#F8F7FF;--tx2:#A5A0B8;--tx3:#6B6580;--ok:#10B981;--no:#EF4444;--wn:#F59E0B;--bd:#2A2540}
+:root{--p:#7C3AED;--pd:#5B21B6;--pl:#A78BFA;--a:#F59E0B;--bg:#0C0A15;--bg2:#13101F;--cd:#1A1625;--ch:#231E33;--tx:#F8F7FF;--tx2:#A5A0B8;--tx3:#6B6580;--ok:#10B981;--no:#EF4444;--wn:#F59E0B;--bd:#2A2540}
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Outfit',sans-serif}
-body{background:var(--bg);color:var(--tx);overflow-x:hidden;min-height:100vh}
-::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg2)}::-webkit-scrollbar-thumb{background:var(--pd);border-radius:3px}
-input,textarea,select,button{font-family:inherit}
-@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@keyframes toastIn{from{transform:translateX(110%);opacity:0}to{transform:translateX(0);opacity:1}}
-@keyframes toastOut{from{opacity:1}to{opacity:0;transform:translateX(110%)}}
-@keyframes orbF{0%,100%{transform:translate(0,0)}33%{transform:translate(30px,-20px)}66%{transform:translate(-20px,15px)}}
-.aUp{animation:slideUp .4s ease-out both}
-.d1{animation-delay:.05s}.d2{animation-delay:.1s}.d3{animation-delay:.15s}.d4{animation-delay:.2s}.d5{animation-delay:.25s}.d6{animation-delay:.3s}.d7{animation-delay:.35s}.d8{animation-delay:.4s}
-.btnP{background:linear-gradient(135deg,var(--p),var(--pd));color:#fff;border:none;padding:9px 18px;border-radius:10px;font-weight:600;cursor:pointer;font-size:13px;display:inline-flex;align-items:center;justify-content:center;gap:5px;transition:all .2s}
-.btnP:hover{box-shadow:0 4px 16px rgba(124,58,237,.3)}
-.btnS{background:var(--cd);color:var(--tx);border:1px solid var(--bd);padding:8px 16px;border-radius:10px;font-weight:500;cursor:pointer;font-size:13px;transition:all .2s}
-.btnS:hover{background:var(--ch);border-color:var(--pl)}
-.btnOk{background:linear-gradient(135deg,var(--ok),#059669);color:#fff;border:none;padding:9px 18px;border-radius:10px;font-weight:600;cursor:pointer;font-size:13px;display:inline-flex;align-items:center;justify-content:center;gap:5px;transition:all .2s}
-.btnNo{background:transparent;color:var(--no);border:1px solid var(--no);padding:8px 16px;border-radius:10px;font-weight:600;cursor:pointer;font-size:13px;transition:all .2s}
-.btnWn{background:linear-gradient(135deg,var(--a),#D97706);color:#000;border:none;padding:9px 18px;border-radius:10px;font-weight:600;cursor:pointer;font-size:13px;transition:all .2s}
-.btnI{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:var(--cd);border:1px solid var(--bd);color:var(--tx);cursor:pointer;transition:all .15s;flex-shrink:0}
-.btnI:hover{background:var(--ch);border-color:var(--pl)}
-.inp{width:100%;background:var(--bg);border:1px solid var(--bd);border-radius:9px;padding:9px 13px;color:var(--tx);font-size:13px;outline:none;transition:border .2s}
-.inp:focus{border-color:var(--pl);box-shadow:0 0 0 3px rgba(124,58,237,.1)}
-.inp::placeholder{color:var(--tx3)}
-.gc{background:var(--cd);border:1px solid var(--bd);border-radius:14px;overflow:hidden;transition:all .25s}
-.gc:hover{border-color:rgba(124,58,237,.3)}
-.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:14px;font-size:10px;font-weight:600;gap:3px}
-.bOk{background:rgba(16,185,129,.13);color:var(--ok)}.bWn{background:rgba(245,158,11,.13);color:var(--wn)}.bNo{background:rgba(239,68,68,.13);color:var(--no)}.bPr{background:rgba(124,58,237,.13);color:var(--pl)}
-#toasts{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;max-width:380px}
-.toast{pointer-events:auto;background:var(--cd);border:1px solid var(--bd);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px;animation:toastIn .35s ease-out;box-shadow:0 8px 25px rgba(0,0,0,.4)}
-.toast.out{animation:toastOut .25s ease-in forwards}
-.toastI{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px}
-.toastB{flex:1;min-width:0}.toastT{font-weight:600;font-size:12px}.toastM{font-size:11px;color:var(--tx2);margin-top:1px}
-.sidebar{width:250px;background:var(--bg2);border-right:1px solid var(--bd);height:100vh;position:fixed;left:0;top:0;z-index:200;display:flex;flex-direction:column;padding:16px 0;overflow-y:auto}
-.si{display:flex;align-items:center;gap:10px;padding:10px 20px;cursor:pointer;color:var(--tx2);transition:all .15s;font-size:13px;border-left:3px solid transparent}
-.si:hover{background:rgba(124,58,237,.06);color:var(--tx)}
-.si.on{background:rgba(124,58,237,.1);color:var(--pl);border-left-color:var(--p)}
-.si i{width:18px;text-align:center;font-size:13px}
-.sc{padding:0 20px;margin:16px 0 6px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--tx3)}
-.st{background:var(--cd);border:1px solid var(--bd);border-radius:14px;padding:18px;transition:all .25s}
-.st:hover{border-color:var(--pl);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.25)}
-.moOv{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(3px);z-index:500;display:flex;align-items:center;justify-content:center;animation:fadeIn .2s}
-.moCt{background:var(--cd);border:1px solid var(--bd);border-radius:18px;padding:24px;width:520px;max-width:95vw;max-height:90vh;overflow-y:auto;animation:slideUp .3s ease-out}
-.tbl{width:100%;border-collapse:collapse;font-size:13px}
-.tbl th{text-align:left;padding:10px 12px;font-size:11px;font-weight:600;color:var(--tx3);border-bottom:1px solid var(--bd);text-transform:uppercase;letter-spacing:.5px}
-.tbl td{padding:10px 12px;border-bottom:1px solid rgba(42,37,64,.5)}
-.tbl tr:hover td{background:rgba(124,58,237,.03)}
-.pbar{height:5px;background:var(--bg);border-radius:3px;overflow:hidden}
-.pfill{height:100%;border-radius:3px;transition:width .4s ease}
-.dot{width:7px;height:7px;border-radius:50%;display:inline-block}
-.dot-ok{background:var(--ok)}.dot-wn{background:var(--wn)}.dot-no{background:var(--no)}.dot-off{background:var(--tx3)}
-.loginOrb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.3}
+body{background:var(--bg);color:var(--tx);min-height:100vh}
+.gc{background:var(--cd);border:1px solid var(--bd);border-radius:14px;padding:12px;margin-bottom:10px}
+.badge{padding:2px 8px;border-radius:12px;font-size:10px;font-weight:600}
+.bOk{background:rgba(16,185,129,.13);color:var(--ok)}
+.bPr{background:rgba(124,58,237,.13);color:var(--pl)}
+.bWn{background:rgba(245,158,11,.13);color:var(--wn)}
+.page{padding:20px}
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{text-align:left;padding:10px;color:var(--tx3);border-bottom:1px solid var(--bd)}
+.tbl td{padding:10px;border-bottom:1px solid rgba(42,37,64,0.5)}
+#toasts{position:fixed;top:20px;right:20px;z-index:1000}
+.toast{background:var(--cd);border:1px solid var(--bd);padding:12px;border-radius:10px;margin-bottom:8px;box-shadow:0 4px 12px rgba(0,0,0,0.5)}
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
-<div id="pgLogin" style="min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden">
-  <div class="loginOrb" style="width:350px;height:350px;background:var(--p);top:-60px;left:-60px;animation:orbF 8s ease-in-out infinite"></div>
-  <div class="loginOrb" style="width:280px;height:280px;background:var(--pl);bottom:-40px;right:-40px;animation:orbF 8s ease-in-out infinite;animation-delay:3s"></div>
-  <div class="loginOrb" style="width:180px;height:180px;background:var(--a);top:30%;right:15%;animation:orbF 8s ease-in-out infinite;animation-delay:5s;opacity:.15"></div>
-  <div style="background:var(--cd);border:1px solid var(--bd);border-radius:20px;padding:40px 36px;width:420px;max-width:95vw;position:relative;z-index:2">
-    <div style="text-align:center;margin-bottom:24px">
-      <div style="width:56px;height:56px;border-radius:16px;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--p),var(--pd))">
-        <i class="fas fa-shield-halved" style="font-size:24px;color:#fff"></i>
-      </div>
-      <h2 style="font-size:20px;font-weight:700">Acceso Administrativo</h2>
-      <p style="font-size:12px;color:var(--tx2);margin-top:4px">Solo personal autorizado</p>
+<div id="pgA" class="page">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold">AkyVoy - Panel de Control</h1>
+        <div class="flex gap-4">
+            <div class="gc p-2 text-center min-w-[100px]">
+                <div id="stat-total" class="text-xl font-bold">0</div>
+                <div class="text-[10px] text-gray-400">Pedidos Hoy</div>
+            </div>
+            <div class="gc p-2 text-center min-w-[100px]">
+                <div id="stat-active" class="text-xl font-bold text-purple-400">0</div>
+                <div class="text-[10px] text-gray-400">En Curso</div>
+            </div>
+        </div>
     </div>
-    <div style="margin-bottom:12px">
-      <label style="font-size:12px;font-weight:500;color:var(--tx2);display:block;margin-bottom:4px">ID de Administrador</label>
-      <input class="inp" id="lId" placeholder="Tu ID">
-    </div>
-    <div style="margin-bottom:20px">
-      <label style="font-size:12px;font-weight:500;color:var(--tx2);display:block;margin-bottom:4px">Contraseña</label>
-      <input class="inp" id="lPw" type="password" placeholder="Contraseña de acceso">
-    </div>
-    <button onclick="doLogin()" style="width:100%;padding:14px;background:linear-gradient(135deg,var(--p),var(--pd));color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:12px">
-      <i class="fas fa-lock" style="margin-right:6px"></i>Ingresar al Panel
-    </button>
-    <button onclick="directLogin()" style="width:100%;padding:14px;background:linear-gradient(135deg,var(--a),#D97706);color:#000;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer">
-      <i class="fas fa-bolt" style="margin-right:6px"></i>Entrar Directo (Demo)
-    </button>
-    <p id="lErr" style="text-align:center;font-size:12px;color:var(--no);margin-top:12px;display:none"></p>
-  </div>
-</div>
 
-<!-- PANEL -->
-<div id="pgPanel" style="display:none">
-  <nav class="sidebar">
-    <div style="padding:0 20px;margin-bottom:20px;display:flex;align-items:center;gap:8px">
-      <svg viewBox="0 0 220 70" width="120" height="38">
-        <defs><linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#A78BFA"/><stop offset="100%" stop-color="#7C3AED"/></linearGradient></defs>
-        <path d="M28 8C28 8,12 22,12 33C12 42,19 49,28 49C37 49,44 42,44 33C44 22,28 8,28 8Z" fill="url(#g1)"/>
-        <circle cx="28" cy="31" r="6" fill="#fff"/>
-        <line x1="48" y1="24" x2="58" y2="24" stroke="#A78BFA" stroke-width="2.5" stroke-linecap="round"/>
-        <line x1="50" y1="30" x2="64" y2="30" stroke="#7C3AED" stroke-width="2.5" stroke-linecap="round"/>
-        <line x1="48" y1="36" x2="56" y2="36" stroke="#5B21B6" stroke-width="2.5" stroke-linecap="round" opacity=".7"/>
-        <text x="72" y="42" font-family="Outfit" font-weight="900" font-size="26" fill="#F8F7FF">Aky<tspan fill="#A78BFA">Voy</tspan></text>
-      </svg>
+    <div class="gc overflow-x-auto">
+        <h2 class="text-lg font-bold mb-4">Monitoreo de Pedidos en Tiempo Real</h2>
+        <table class="tbl">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Cliente</th>
+                    <th>Comedor</th>
+                    <th>Repartidor</th>
+                    <th>Estado</th>
+                    <th>Total</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="order-rows"></tbody>
+        </table>
     </div>
-    <div class="sc">Principal</div>
-    <div class="si on" onclick="goSec('dashboard',this)"><i class="fas fa-chart-line"></i>Dashboard</div>
-    <div class="si" onclick="goSec('users',this)"><i class="fas fa-users"></i>Usuarios</div>
-    <div class="si" onclick="goSec('restaurants',this)"><i class="fas fa-store"></i>Comedores</div>
-    <div class="si" onclick="goSec('drivers',this)"><i class="fas fa-motorcycle"></i>Repartidores</div>
-    <div class="si" onclick="goSec('orders',this)"><i class="fas fa-clipboard-list"></i>Pedidos</div>
-    <div class="sc">Sistema</div>
-    <div class="si" onclick="goSec('finance',this)"><i class="fas fa-dollar-sign"></i>Finanzas</div>
-    <div class="si" onclick="goSec('notifs',this)"><i class="fas fa-bell"></i>Notificaciones</div>
-    <div class="si" onclick="goSec('contracts',this)"><i class="fas fa-file-contract"></i>Contratos</div>
-    <div class="si" onclick="goSec('settings',this)"><i class="fas fa-gear"></i>Configuración</div>
-    <div style="margin-top:auto;padding:16px 20px;border-top:1px solid var(--bd)">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-        <div style="width:36px;height:36px;border-radius:50%;background:var(--pd);display:flex;align-items:center;justify-content:center"><i class="fas fa-user-shield" style="font-size:14px;color:var(--pl)"></i></div>
-        <div><div style="font-size:13px;font-weight:600">Emmanuel</div><div style="font-size:11px;color:var(--tx3)">Super Admin</div></div>
-      </div>
-      <button onclick="doLogout()" class="btnS" style="width:100%;font-size:12px"><i class="fas fa-right-from-bracket" style="margin-right:4px"></i>Cerrar Sesión</button>
-    </div>
-  </nav>
-  <main style="margin-left:250px;min-height:100vh;padding:24px 28px">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px">
-      <div><h1 id="secT" style="font-size:22px;font-weight:700">Dashboard</h1><p id="secS" style="font-size:13px;color:var(--tx2)">Vista general del sistema AkyVoy</p></div>
-      <div style="display:flex;align-items:center;gap:12px">
-        <span id="pDate" style="font-size:12px;color:var(--tx3)"></span>
-        <button class="btnI" onclick="goSec('notifs')"><i class="fas fa-bell" style="font-size:13px"></i></button>
-      </div>
-    </div>
-    <div id="s-dashboard" class="sec"></div>
-    <div id="s-users" class="sec" style="display:none"></div>
-    <div id="s-restaurants" class="sec" style="display:none"></div>
-    <div id="s-drivers" class="sec" style="display:none"></div>
-    <div id="s-orders" class="sec" style="display:none"></div>
-    <div id="s-finance" class="sec" style="display:none"></div>
-    <div id="s-notifs" class="sec" style="display:none"></div>
-    <div id="s-contracts" class="sec" style="display:none"></div>
-    <div id="s-settings" class="sec" style="display:none"></div>
-  </main>
 </div>
 
 <div id="toasts"></div>
-<div id="modal"></div>
 
-<script>
-// ========== DATOS ==========
-var USERS=[
-  {id:1,name:'María García',email:'maria@email.com',phone:'+1 555-0101',orders:18,spent:245,status:'active',joined:'2024-11-15'},
-  {id:2,name:'Juan Pérez',email:'juan@email.com',phone:'+1 555-0102',orders:32,spent:520,status:'active',joined:'2024-10-02'},
-  {id:3,name:'Ana López',email:'ana@email.com',phone:'+1 555-0103',orders:8,spent:95,status:'active',joined:'2025-01-10'},
-  {id:4,name:'Pedro Martínez',email:'pedro@email.com',phone:'+1 555-0104',orders:45,spent:780,status:'active',joined:'2024-08-20'},
-  {id:5,name:'Laura Hernández',email:'laura@email.com',phone:'+1 555-0105',orders:3,spent:38,status:'inactive',joined:'2025-01-20'},
-  {id:6,name:'Diego Ramírez',email:'diego@email.com',phone:'+1 555-0106',orders:27,spent:410,status:'active',joined:'2024-09-05'},
-  {id:7,name:'Sofía Castillo',email:'sofia@email.com',phone:'+1 555-0107',orders:0,spent:0,status:'inactive',joined:'2025-01-28'},
-  {id:8,name:'Carlos Vargas',email:'carlos@email.com',phone:'+1 555-0108',orders:15,spent:198,status:'active',joined:'2024-12-01'}
-];
-var RESTS=[
-  {id:1,code:'COM-0001',name:'Sabor Criollo',owner:'Roberto Sánchez',phone:'+1 555-1001',addr:'Calle Principal #45',menu:12,rating:4.8,orders:234,income:4850,status:'active',paid:true,expires:'2025-02-15',contract:true,type:'fijo',drivers:['REP-0040','REP-0041']},
-  {id:2,code:'COM-0002',name:'Pizza Rex',owner:'Marco Rossi',phone:'+1 555-1002',addr:'Av. Industrial #120',menu:8,rating:4.6,orders:189,income:3780,status:'active',paid:true,expires:'2025-02-28',contract:true,type:'fijo',drivers:['REP-0042']},
-  {id:3,code:'COM-0003',name:'Sushi Lover',owner:'Yuki Tanaka',phone:'+1 555-1003',addr:'Centro Comercial #8',menu:6,rating:4.9,orders:156,income:3120,status:'active',paid:true,expires:'2025-03-10',contract:true,type:'mixto',drivers:['REP-0040']},
-  {id:4,code:'COM-0004',name:'Burger House',owner:'James Wilson',phone:'+1 555-1004',addr:'Carrera 15 #78-32',menu:10,rating:4.5,orders:312,income:6240,status:'active',paid:false,expires:'2025-01-30',contract:false,type:'mixto',drivers:[]},
-  {id:5,code:'COM-0005',name:'Jugo Express',owner:'Carmen Ruiz',phone:'+1 555-1005',addr:'Parque Central K-3',menu:5,rating:4.7,orders:89,income:1335,status:'suspended',paid:false,expires:'2025-01-05',contract:true,type:'abierto',drivers:[]},
-  {id:6,code:'COM-0006',name:'El Rincón Paisa',owner:'Gloria Mendoza',phone:'+1 555-1006',addr:'Barrio Antiguo #22',menu:0,rating:0,orders:0,income:0,status:'pending',paid:false,expires:null,contract:false,type:'pendiente',drivers:[]}
-];
-var DRVS=[
-  {id:1,code:'REP-0040',name:'Miguel Torres',phone:'+1 555-2001',vehicle:'Moto',delivered:245,rating:4.9,status:'approved',type:'fijo',balance:320,assignedRest:'COM-0001'},
-  {id:2,code:'REP-0041',name:'Andrés López',phone:'+1 555-2002',vehicle:'Moto',delivered:198,rating:4.7,status:'approved',type:'fijo',balance:256,assignedRest:'COM-0001'},
-  {id:3,code:'REP-0042',name:'Carlos Mendoza',phone:'+1 555-2003',vehicle:'Moto',delivered:312,rating:4.9,status:'approved',type:'comisionable',balance:147.50,assignedRest:null},
-  {id:4,code:'REP-0043',name:'Fernando Gil',phone:'+1 555-2004',vehicle:'Moto',delivered:0,rating:0,status:'pending',type:'comisionable',balance:0,assignedRest:null},
-  {id:5,code:'REP-0044',name:'Roberto Díaz',phone:'+1 555-2005',vehicle:'Bicicleta',delivered:0,rating:0,status:'pending',type:'comisionable',balance:0,assignedRest:null},
-  {id:6,code:'REP-0045',name:'Javier Peña',phone:'+1 555-2006',vehicle:'Moto',delivered:0,rating:0,status:'rejected',type:'comisionable',balance:0,assignedRest:null},
-  {id:7,code:'REP-0046',name:'David Quintero',phone:'+1 555-2007',vehicle:'Moto',delivered:89,rating:4.6,status:'approved',type:'comisionable',balance:78,assignedRest:null},
-  {id:8,code:'REP-0047',name:'Santiago Rojas',phone:'+1 555-2008',vehicle:'Auto',delivered:0,rating:0,status:'pending',type:'comisionable',balance:0,assignedRest:null}
-];
-var ORDS=[];
-var stArr=['delivered','delivered','delivered','delivered','delivered','delivered','delivering','accepted','pending','cancelled'];
-var clArr=['María G.','Juan P.','Ana L.','Pedro M.','Diego R.','Sofía H.'];
-var drArr=['Carlos M.','Miguel T.','Andrés L.','David Q.'];
-var itArr=['Bandeja Paisa x1','Pizza x2','Sushi x3','Burger x1','Jugo x4'];
-for(var i=0;i<30;i++){var r=RESTS[Math.floor(Math.random()*RESTS.length)];if(r.status!=='active')continue;ORDS.push({code:'AK-'+(1100+i),rest:r.name,restCode:r.code,items:itArr[Math.floor(Math.random()*5)],total:parseFloat((Math.random()*30+5).toFixed(2)),status:stArr[Math.floor(Math.random()*10)],client:clArr[Math.floor(Math.random()*6)],driver:drArr[Math.floor(Math.random()*4)],time:String(8+Math.floor(Math.random()*10))+':'+String(Math.floor(Math.random()*60)).padStart(2,'0'),date:'2025-01-'+String(25+Math.floor(Math.random()*6)).padStart(2,'0'),commission:parseFloat((Math.random()*1).toFixed(2))})}
-var NOTIFS=[
-  {id:1,title:'Nuevo repartidor solicitante',msg:'Fernando Gil (REP-0043) solicitó acceso',type:'wn',time:'Hace 15 min',read:false},
-  {id:2,title:'Mensualidad vencida',msg:'Burger House (COM-0004) no ha pagado',type:'no',time:'Hace 1 hora',read:false},
-  {id:3,title:'Contrato firmado',msg:'El Rincón Paisa firmó el contrato',type:'ok',time:'Hace 2 horas',read:true},
-  {id:4,title:'Repartidor rechazado',msg:'Javier Peña fue rechazado automáticamente',type:'no',time:'Hace 3 horas',read:true},
-  {id:5,title:'Comedor suspendido',msg:'Jugo Express suspendido por falta de pago',type:'no',time:'Ayer',read:true}
-];
-var SETTINGS={commRate:2,monthlyFee:29.99,radius:10,currency:'USD'};
-
-// ========== TOAST ==========
-function toast(t,m,type){
-  var c=document.getElementById('toasts');
-  var col={info:'#7C3AED',ok:'#10B981',wn:'#F59E0B',no:'#EF4444'};
-  var ico={info:'fa-bell',ok:'fa-check-circle',wn:'fa-exclamation-triangle',no:'fa-times-circle'};
-  var el=document.createElement('div');el.className='toast';
-  el.innerHTML='<div class="toastI" style="background:'+col[type]+'22;color:'+col[type]+'"><i class="fas '+ico[type]+'"></i></div><div class="toastB"><div class="toastT">'+t+'</div><div class="toastM">'+m+'</div></div>';
-  c.appendChild(el);setTimeout(function(){el.classList.add('out');setTimeout(function(){el.remove()},250)},4000);
-}
-
-// ========== MODAL ==========
-function openModal(h){document.getElementById('modal').innerHTML='<div class="moOv" onclick="if(event.target===this)closeModal()"><div class="moCt">'+h+'</div></div>'}
-function closeModal(){document.getElementById('modal').innerHTML=''}
-
-// ========== LOGIN ==========
-function doLogin(){
-  var id=document.getElementById('lId').value.trim();
-  var pw=document.getElementById('lPw').value;
-  if(id==='Emmanuel'&&pw==='Torres2515'){
-    document.getElementById('pgLogin').style.display='none';
-    document.getElementById('pgPanel').style.display='block';
-    initPanel();
-  } else {
-    var e=document.getElementById('lErr');
-    e.textContent='Credenciales incorrectas. Solo personal autorizado.';
-    e.style.display='block';
-  }
-}
-function directLogin(){
-  document.getElementById('lId').value='Emmanuel';
-  document.getElementById('lPw').value='Torres2515';
-  doLogin();
-}
-function doLogout(){
-  document.getElementById('pgPanel').style.display='none';
-  document.getElementById('pgLogin').style.display='flex';
-  document.getElementById('lPw').value='';
-  document.getElementById('lErr').style.display='none';
-}
-
-// ========== INIT ==========
-function initPanel(){
-  document.getElementById('pDate').textContent=new Date().toLocaleDateString('es',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-  renderDashboard();renderUsers();renderRests();renderDrivers();renderOrders();renderFinance();renderNotifs();renderContracts();renderSettings();
-}
-
-// ========== NAVEGACION ==========
-function goSec(sec,el){
-  var secs=['dashboard','users','restaurants','drivers','orders','finance','notifs','contracts','settings'];
-  for(var i=0;i<secs.length;i++){document.getElementById('s-'+secs[i]).style.display='none'}
-  document.getElementById('s-'+sec).style.display='block';
-  var items=document.querySelectorAll('.si');
-  for(var j=0;j<items.length;j++){items[j].classList.remove('on')}
-  if(el)el.classList.add('on');
-  var titles={dashboard:['Dashboard','Vista general del sistema'],users:['Usuarios','Gestión de clientes registrados'],restaurants:['Comedores','Gestión de restaurantes'],drivers:['Repartidores','Aprobación y gestión de repartidores'],orders:['Pedidos','Todos los pedidos del sistema'],finance:['Finanzas','Ingresos, comisiones y mensualidades'],notifs:['Notificaciones','Centro de alertas y eventos'],contracts:['Contratos','Gestión de contratos con comedores'],settings:['Configuración','Ajustes generales del sistema']};
-  var t=titles[sec]||['',''];
-  document.getElementById('secT').textContent=t[0];
-  document.getElementById('secS').textContent=t[1];
-  if(sec==='dashboard')setTimeout(drawCharts,100);
-}
-
-// ========== DASHBOARD ==========
-function renderDashboard(){
-  var ar=0,ap=0,pp=0,mi=0,mc=0,ur=0;
-  for(var i=0;i<RESTS.length;i++){if(RESTS[i].status==='active')ar++}
-  for(var i=0;i<DRVS.length;i++){if(DRVS[i].status==='approved')ap++;if(DRVS[i].status==='pending')pp++}
-  for(var i=0;i<ORDS.length;i++){mi+=ORDS[i].total;mc+=ORDS[i].commission}
-  var ur=ar*SETTINGS.monthlyFee;
-  document.getElementById('s-dashboard').innerHTML=
-    '<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">'+
-    '<div class="st aUp"><div style="display:flex;align-items:center;gap:12px;margin-bottom:8px"><div style="width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(124,58,237,.13)"><i class="fas fa-users" style="color:var(--pl)"></i></div></div><div style="font-size:24px;font-weight:700">'+USERS.length+'</div><div style="font-size:12px;color:var(--tx3)">Usuarios Registrados</div></div>'+
-    '<div class="st aUp d1"><div style="display:flex;align-items:center;gap:12px;margin-bottom:8px"><div style="width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(245,158,11,.13)"><i class="fas fa-store" style="color:var(--a)"></i></div></div><div style="font-size:24px;font-weight:700">'+ar+'</div><div style="font-size:12px;color:var(--tx3)">Comedores Activos</div></div>'+
-    '<div class="st aUp d2"><div style="display:flex;align-items:center;gap:12px;margin-bottom:8px"><div style="width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(16,185,129,.13)"><i class="fas fa-motorcycle" style="color:var(--ok)"></i></div></div><div style="font-size:24px;font-weight:700">'+ap+'</div><div style="font-size:12px;color:var(--tx3)">Repartidores</div><div style="font-size:12px;margin-top:4px;color:var(--wn)"><i class="fas fa-clock"></i> '+pp+' pendientes</div></div>'+
-    '<div class="st aUp d3"><div style="display:flex;align-items:center;gap:12px;margin-bottom:8px"><div style="width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(239,68,68,.13)"><i class="fas fa-clipboard-list" style="color:var(--no)"></i></div></div><div style="font-size:24px;font-weight:700">'+ORDS.length+'</div><div style="font-size:12px;color:var(--tx3)">Pedidos del Período</div><div style="font-size:12px;margin-top:4px;color:var(--ok)"><i class="fas fa-dollar-sign"></i> $'+mi.toFixed(0)+'</div></div>'+
-    '</div>'+
-    '<div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">'+
-    '<div class="st col-span-2 aUp d2"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px"><h4 style="font-weight:600;font-size:14px">Pedidos por Día</h4><span class="badge bPr">Últimos 7 días</span></div><canvas id="chartOrds" height="180" style="width:100%"></canvas></div>'+
-    '<div class="st aUp d3"><h4 style="font-weight:600;font-size:14px;margin-bottom:16px">Distribución de Ingresos</h4><canvas id="chartDist" height="180" style="width:100%"></canvas></div>'+
-    '</div>'+
-    '<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">'+
-    '<div class="st aUp d4"><h4 style="font-weight:600;font-size:14px;margin-bottom:12px"><i class="fas fa-exclamation-triangle" style="color:var(--wn);margin-right:6px"></i>Alertas</h4><div style="display:flex;flex-direction:column;gap:8px">'+
-    (pp?'<div style="display:flex;align-items:center;gap:8px;padding:8px;border-radius:8px;font-size:13px;background:rgba(245,158,11,.06)"><span class="dot dot-wn"></span><span>'+pp+' repartidores esperando aprobación</span><button onclick="goSec(\'drivers\')" style="margin-left:auto;padding:4px 10px;font-size:11px" class="btnP">Revisar</button></div>':'')+
-    '<div style="display:flex;align-items:center;gap:8px;padding:8px;border-radius:8px;font-size:13px;background:rgba(16,185,129,.06)"><span class="dot dot-ok"></span><span>Sistema funcionando normalmente</span></div>'+
-    '</div></div>'+
-    '<div class="st aUp d5"><h4 style="font-weight:600;font-size:14px;margin-bottom:12px"><i class="fas fa-clock-rotate-left" style="color:var(--pl);margin-right:6px"></i>Últimos Pedidos</h4><div style="display:flex;flex-direction:column;gap:6px">'+
-    ORDS.slice(0,5).map(function(o){var c=o.status==='delivered'?'dot-ok':o.status==='cancelled'?'dot-no':'dot-wn';return '<div style="display:flex;align-items:center;gap:8px;font-size:12px;padding:6px"><span class="dot '+c+'"></span><span style="font-family:monospace;font-weight:500;color:var(--pl)">'+o.code+'</span><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--tx2)">'+o.rest+'</span><span style="font-weight:500">$'+o.total.toFixed(2)+'</span></div>'}).join('')+
-    '</div></div></div>'+
-    '<div class="grid grid-cols-3 gap-4">'+
-    '<div class="st text-center aUp d6"><div style="font-size:12px;color:var(--tx3);margin-bottom:4px">Ingresos Pedidos</div><div style="font-size:20px;font-weight:700;color:var(--ok)">$'+mi.toFixed(0)+'</div></div>'+
-    '<div class="st text-center aUp d7"><div style="font-size:12px;color:var(--tx3);margin-bottom:4px">Comisiones</div><div style="font-size:20px;font-weight:700;color:var(--a)">$'+mc.toFixed(0)+'</div></div>'+
-    '<div class="st text-center aUp d8"><div style="font-size:12px;color:var(--tx3);margin-bottom:4px">Mensualidades</div><div style="font-size:20px;font-weight:700;color:var(--pl)">$'+ur.toFixed(0)+'</div></div>'+
-    '</div>';
-}
-
-function drawCharts(){
-  var c1=document.getElementById('chartOrds');if(!c1)return;
-  var ctx=c1.getContext('2d');c1.width=c1.offsetWidth*2;c1.height=360;
-  var days=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];var vals=[32,45,38,52,41,58,48];var mx=60;
-  ctx.clearRect(0,0,c1.width,360);
-  for(var i=0;i<4;i++){var y=30+i*75;ctx.strokeStyle='rgba(42,37,64,.5)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(50,y);ctx.lineTo(c1.width-20,y);ctx.stroke();ctx.fillStyle='#6B6580';ctx.font='18px Outfit';ctx.textAlign='right';ctx.fillText(mx-mx/3*i,45,y+5)}
-  var bw=Math.max(20,(c1.width-100)/7*.6);var gap=(c1.width-100)/7;
-  for(var i=0;i<7;i++){var x=70+i*gap;var h=Math.max(4,vals[i]/mx*280);var yy=310-h;ctx.fillStyle='#7C3AED';ctx.beginPath();ctx.rect(x,yy,bw,h);ctx.fill();ctx.fillStyle='#A5A0B8';ctx.font='18px Outfit';ctx.textAlign='center';ctx.fillText(days[i],x+bw/2,340);ctx.fillStyle='#F8F7FF';ctx.font='bold 18px Outfit';ctx.fillText(vals[i],x+bw/2,yy-8)}
-  var c2=document.getElementById('chartDist');if(!c2)return;
-  var ctx2=c2.getContext('2d');c2.width=c2.offsetWidth*2;c2.height=360;
-  var data=[{l:'Pedidos',v:65,c:'#7C3AED'},{l:'Mensualidad',v:20,c:'#F59E0B'},{l:'Comisiones',v:15,c:'#10B981'}];
-  var cx2=c2.width/2,cy2=170,r=110,angle=-Math.PI/2;
-  data.forEach(function(d){var sl=d.v/100*Math.PI*2;ctx2.fillStyle=d.c;ctx2.beginPath();ctx2.moveTo(cx2,cy2);ctx2.arc(cx2,cy2,r,angle,angle+sl);ctx2.closePath();ctx2.fill();angle+=sl});
-  ctx2.fillStyle='#1A1625';ctx2.beginPath();ctx2.arc(cx2,cy2,r*.55,0,Math.PI*2);ctx2.fill();
-  ctx2.fillStyle='#F8F7FF';ctx2.font='bold 28px Outfit';ctx2.textAlign='center';ctx2.fillText('$12.4K',cx2,cy2+10);
-  data.forEach(function(d,i){var ly=320+i*28;ctx2.fillStyle=d.c;ctx2.beginPath();ctx2.rect(cx2-80,ly-6,12,12);ctx2.fill();ctx2.fillStyle='#A5A0B8';ctx2.font='18px Outfit';ctx2.textAlign='left';ctx2.fillText(d.l+' '+d.v+'%',cx2-62,ly+5)});
-}
-
-// ========== USUARIOS ==========
-function renderUsers(q){
-  q=q||'';
-  var f=USERS.filter(function(u){return u.name.toLowerCase().indexOf(q.toLowerCase())>=0||u.email.toLowerCase().indexOf(q.toLowerCase())>=0});
-  document.getElementById('s-users').innerHTML=
-    '<div style="margin-bottom:16px;display:flex;align-items:center;gap:12px"><input class="inp" style="max-width:300px" placeholder="Buscar usuarios..." value="'+q+'" oninput="renderUsers(this.value)"><span style="font-size:12px;color:var(--tx3)">'+f.length+' usuarios</span></div>'+
-    '<div class="gc"><table class="tbl"><thead><tr><th>Usuario</th><th>Contacto</th><th>Pedidos</th><th>Gastado</th><th>Estado</th><th>Registro</th></tr></thead><tbody>'+
-    f.map(function(u){return '<tr><td><div style="display:flex;align-items:center;gap:8px"><div style="width:32px;height:32px;border-radius:50%;background:var(--pd);display:flex;align-items:center;justify-content:center"><i class="fas fa-user" style="font-size:11px;color:var(--pl)"></i></div><div><div style="font-weight:500;font-size:13px">'+u.name+'</div><div style="font-size:11px;color:var(--tx3)">'+u.email+'</div></div></div></td><td style="font-size:12px;color:var(--tx2)">'+u.phone+'</td><td style="font-weight:500">'+u.orders+'</td><td style="font-weight:500">$'+u.spent+'</td><td><span class="badge '+(u.status==='active'?'bOk':'bNo')+'">'+(u.status==='active'?'Activo':'Inactivo')+'</span></td><td style="font-size:12px;color:var(--tx3)">'+u.joined+'</td></tr>'}).join('')+
-    '</tbody></table></div>';
-}
-
-// ========== COMEDORES ==========
-function renderRests(){
-  var ac=0,su=0,pe=0;
-  RESTS.forEach(function(r){if(r.status==='active')ac++;if(r.status==='suspended')su++;if(r.status==='pending')pe++});
-  var sm={active:{b:'bOk',t:'Activo'},suspended:{b:'bNo',t:'Suspendido'},pending:{b:'bWn',t:'Pendiente'}};
-  document.getElementById('s-restaurants').innerHTML=
-    '<div class="grid grid-cols-3 gap-4 mb-6">'+
-    '<div class="st aUp"><div style="font-size:24px;font-weight:700;color:var(--ok)">'+ac+'</div><div style="font-size:12px;color:var(--tx3)">Activos</div></div>'+
-    '<div class="st aUp d1"><div style="font-size:24px;font-weight:700;color:var(--wn)">'+su+'</div><div style="font-size:12px;color:var(--tx3)">Suspendidos</div></div>'+
-    '<div class="st aUp d2"><div style="font-size:24px;font-weight:700;color:var(--pl)">'+pe+'</div><div style="font-size:12px;color:var(--tx3)">Pendientes</div></div></div>'+
-    '<div class="gc"><table class="tbl"><thead><tr><th>Comedor</th><th>Propietario</th><th>Mensualidad</th><th>Pedidos</th><th>Ingresos</th><th>Tipo</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>'+
-    RESTS.map(function(r){
-      var s=sm[r.status]||sm.pending;var dl=r.expires?Math.max(0,Math.ceil((new Date(r.expires)-new Date())/86400000)):0;
-      return '<tr><td><div style="font-weight:500;font-size:13px">'+r.name+'</div><div style="font-size:11px;color:var(--tx3)">'+r.code+'</div></td><td style="font-size:13px">'+r.owner+'</td><td><span class="badge '+(r.paid?'bOk':'bNo')+'">'+(r.paid?'Pagada':'Pendiente')+'</span>'+(dl?'<div style="font-size:11px;color:'+(dl<=7?'var(--no)':'var(--tx3)')+'">'+dl+'d</div>':'')+'</td><td style="font-weight:500">'+r.orders+'</td><td style="font-weight:500">$'+r.income+'</td><td><span class="badge '+(r.type==='fijo'?'bOk':r.type==='mixto'?'bWn':'bPr')+'">'+r.type+'</span></td><td><span class="badge '+s.b+'">'+s.t+'</span></td><td><div style="display:flex;gap:4px">'+
-      (r.status==='pending'?'<button onclick="approveR('+r.id+')" class="btnOk" style="padding:4px 10px;font-size:11px"><i class="fas fa-check"></i></button><button onclick="rejectR('+r.id+')" class="btnNo" style="padding:4px 10px;font-size:11px"><i class="fas fa-times"></i></button>':
-       r.status==='active'?'<button onclick="togglePayR('+r.id+')" class="btnS" style="padding:4px 10px;font-size:11px"><i class="fas fa-dollar-sign"></i></button><button onclick="suspendR('+r.id+')" class="btnNo" style="padding:4px 10px;font-size:11px"><i class="fas fa-ban"></i></button>':
-       '<button onclick="reactivateR('+r.id+')" class="btnOk" style="padding:4px 10px;font-size:11px"><i class="fas fa-undo"></i></button>')+
-      '<button onclick="showRestD('+r.id+')" class="btnI" style="width:28px;height:28px"><i class="fas fa-eye" style="font-size:10px"></i></button></div></td></tr>'
-    }).join('')+
-    '</tbody></table></div>';
-}
-function approveR(id){var r=RESTS.find(function(x){return x.id===id});if(r){r.status='active';r.paid=true;r.expires=new Date(Date.now()+30*86400000).toISOString().split('T')[0];NOTIFS.unshift({id:Date.now(),title:'Comedor Aprobado',msg:r.name+' ('+r.code+') aprobado',type:'ok',time:'Ahora',read:false});renderRests();renderDashboard();toast('Aprobado',r.name+' activado','ok')}}
-function rejectR(id){var r=RESTS.find(function(x){return x.id===id});if(r){r.status='rejected';renderRests();toast('Rechazado',r.name+' rechazado','no')}}
-function suspendR(id){var r=RESTS.find(function(x){return x.id===id});if(r){r.status='suspended';NOTIFS.unshift({id:Date.now(),title:'Comedor Suspendido',msg:r.name+' suspendido',type:'no',time:'Ahora',read:false});renderRests();renderDashboard();toast('Suspendido',r.name,'wn')}}
-function reactivateR(id){var r=RESTS.find(function(x){return x.id===id});if(r){r.status='active';r.paid=true;r.expires=new Date(Date.now()+30*86400000).toISOString().split('T')[0];renderRests();renderDashboard();toast('Reactivado',r.name,'ok')}}
-function togglePayR(id){var r=RESTS.find(function(x){return x.id===id});if(r){r.paid=!r.paid;if(r.paid)r.expires=new Date(Date.now()+30*86400000).toISOString().split('T')[0];renderRests();renderDashboard();renderFinance();toast(r.paid?'Pago Registrado':'Pago Revertido',r.name,r.paid?'ok':'wn')}}
-function showRestD(id){
-  var r=RESTS.find(function(x){return x.id===id});if(!r)return;
-  var dn=r.drivers.map(function(d){var dr=DRVS.find(function(x){return x.code===d});return dr?dr.name:d}).join(', ')||'Ninguno';
-  openModal('<h3 style="font-weight:700;font-size:18px;margin-bottom:16px"><i class="fas fa-store" style="color:var(--a);margin-right:8px"></i>'+r.name+'</h3>'+
-    '<div class="grid grid-cols-2 gap-3" style="font-size:13px;margin-bottom:16px">'+
-    '<div><span style="color:var(--tx3)">Código:</span> <span style="font-weight:500">'+r.code+'</span></div>'+
-    '<div><span style="color:var(--tx3)">Propietario:</span> <span style="font-weight:500">'+r.owner+'</span></div>'+
-    '<div><span style="color:var(--tx3)">Teléfono:</span> '+r.phone+'</div>'+
-    '<div><span style="color:var(--tx3)">Dirección:</span> '+r.addr+'</div>'+
-    '<div><span style="color:var(--tx3)">Platos:</span> '+r.menu+'</div>'+
-    '<div><span style="color:var(--tx3)">Rating:</span> <span style="color:var(--a)"><i class="fas fa-star"></i> '+r.rating+'</span></div>'+
-    '<div><span style="color:var(--tx3)">Pedidos:</span> '+r.orders+'</div>'+
-    '<div><span style="color:var(--tx3)">Ingresos:</span> <span style="font-weight:700;color:var(--ok)">$'+r.income+'</span></div>'+
-    '<div><span style="color:var(--tx3)">Tipo:</span> <span class="badge '+(r.type==='fijo'?'bOk':'bWn')+'">'+r.type+'</span></div>'+
-    '<div><span style="color:var(--tx3)">Contrato:</span> <span class="badge '+(r.contract?'bOk':'bNo')+'">'+(r.contract?'Firmado':'Pendiente')+'</span></div>'+
-    '<div style="grid-column:span 2"><span style="color:var(--tx3)">Repartidores fijos:</span> '+dn+'</div>'+
-    '</div><button onclick="closeModal()" class="btnS" style="width:100%">Cerrar</button>');
-}
-
-// ========== REPARTIDORES ==========
-function renderDrivers(){
-  var ap=0,pe=0,re=0;
-  DRVS.forEach(function(d){if(d.status==='approved')ap++;if(d.status==='pending')pe++;if(d.status==='rejected')re++});
-  var sm={approved:{b:'bOk',t:'Aprobado'},pending:{b:'bWn',t:'Pendiente'},rejected:{b:'bNo',t:'Rechazado'}};
-  var pendHtml=pe?'<div style="margin-bottom:24px"><h4 style="font-weight:600;font-size:14px;color:var(--wn);margin-bottom:12px"><i class="fas fa-clock" style="margin-right:6px"></i>Solicitudes Pendientes</h4><div class="grid grid-cols-1 lg:grid-cols-2 gap-3">'+
-    DRVS.filter(function(d){return d.status==='pending'}).map(function(d){
-      return '<div class="gc" style="padding:16px;border-color:rgba(245,158,11,.3)"><div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><div style="width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(245,158,11,.13)"><i class="fas fa-user-clock" style="color:var(--wn)"></i></div><div><div style="font-weight:600">'+d.name+'</div><div style="font-size:11px;color:var(--tx3)">'+d.code+' · '+d.vehicle+'</div></div></div><div style="display:flex;gap:8px"><button onclick="approveD('+d.id+')" class="btnOk" style="flex:1"><i class="fas fa-check" style="margin-right:4px"></i>Aprobar</button><button onclick="rejectD('+d.id+')" class="btnNo" style="flex:1"><i class="fas fa-times" style="margin-right:4px"></i>Rechazar</button></div></div>'
-    }).join('')+'</div></div>':'';
-
-  document.getElementById('s-drivers').innerHTML=
-    '<div class="grid grid-cols-3 gap-4 mb-6">'+
-    '<div class="st aUp"><div style="font-size:24px;font-weight:700;color:var(--ok)">'+ap+'</div><div style="font-size:12px;color:var(--tx3)">Aprobados</div></div>'+
-    '<div class="st aUp d1"><div style="font-size:24px;font-weight:700;color:var(--wn)">'+pe+'</div><div style="font-size:12px;color:var(--tx3)">Pendientes</div></div>'+
-    '<div class="st aUp d2"><div style="font-size:24px;font-weight:700;color:var(--no)">'+re+'</div><div style="font-size:12px;color:var(--tx3)">Rechazados</div></div></div>'+
-    pendHtml+
-    '<h4 style="font-weight:600;font-size:14px;margin-bottom:12px">Todos los Repartidores</h4>'+
-    '<div class="gc"><table class="tbl"><thead><tr><th>Repartidor</th><th>Vehículo</th><th>Tipo</th><th>Entregas</th><th>Rating</th><th>Saldo</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>'+
-    DRVS.map(function(d){
-      var s=sm[d.status]||sm.pending;
-      var balStyle=d.type==='comisionable'?(d.balance<=10?'color:var(--no)':'color:var(--ok)'):'color:var(--tx3)';
-      return '<tr><td><div style="display:flex;align-items:center;gap:8px"><div style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:'+(d.status==='approved'?'rgba(16,185,129,.13)':d.status==='pending'?'rgba(245,158,11,.13)':'rgba(239,68,68,.13)')+'"><i class="fas fa-motorcycle" style="font-size:11px;color:'+(d.status==='approved'?'var(--ok)':d.status==='pending'?'var(--wn)':'var(--no)')+'"></i></div><div><div style="font-weight:500;font-size:13px">'+d.name+'</div><div style="font-size:11px;color:var(--tx3)">'+d.code+'</div></div></div></td><td style="font-size:13px">'+d.vehicle+'</td><td><span class="badge '+(d.type==='fijo'?'bOk':'bWn')+'">'+d.type+(d.assignedRest?' → '+d.assignedRest:'')+'</span></td><td style="font-weight:500">'+d.delivered+'</td><td><i class="fas fa-star" style="font-size:11px;color:var(--a)"></i> '+d.rating+'</td><td style="font-weight:500;'+balStyle+'">'+(d.type==='comisionable'?'$'+d.balance.toFixed(2):'N/A')+'</td><td><span class="badge '+s.b+'">'+s.t+'</span></td><td><div style="display:flex;gap:4px">'+
-      (d.status==='pending'?'<button onclick="approveD('+d.id+')" class="btnOk" style="padding:4px 8px;font-size:11px"><i class="fas fa-check"></i></button>':'')+
-      (d.status==='approved'?'<button onclick="toggleDType('+d.id+')" class="btnS" style="padding:4px 8px;font-size:10px"><i class="fas fa-exchange-alt"></i></button>':'')+
-      '<button onclick="toast(\'Detalle\',\'Ver perfil de '+d.name+'\',\'info\')" class="btnI" style="width:28px;height:28px"><i class="fas fa-eye" style="font-size:10px"></i></button></div></td></tr>'
-    }).join('')+
-    '</tbody></table></div>';
-}
-function approveD(id){var d=DRVS.find(function(x){return x.id===id});if(d){d.status='approved';NOTIFS.unshift({id:Date.now(),title:'Repartidor Aprobado',msg:d.name+' ('+d.code+') aprobado',type:'ok',time:'Ahora',read:false});renderDrivers();renderDashboard();toast('Aprobado',d.name+' puede entregar','ok')}}
-function rejectD(id){var d=DRVS.find(function(x){return x.id===id});if(d){d.status='rejected';NOTIFS.unshift({id:Date.now(),title:'Repartidor Rechazado',msg:d.name+' rechazado',type:'no',time:'Ahora',read:false});renderDrivers();renderDashboard();toast('Rechazado',d.name,'no')}}
-function toggleDType(id){var d=DRVS.find(function(x){return x.id===id});if(d){d.type=d.type==='fijo'?'comisionable':'fijo';renderDrivers();toast('Tipo Cambiado',d.name+' ahora es '+d.type,'info')}}
-
-// ========== PEDIDOS ==========
-function renderOrders(f){
-  f=f||'all';
-  var fl=f==='all'?ORDS:ORDS.filter(function(o){return o.status===f});
-  var cnt={all:ORDS.length,pending:0,accepted:0,delivering:0,delivered:0,cancelled:0};
-  ORDS.forEach(function(o){cnt[o.status]++});
-  var sm={pending:{b:'bWn',t:'Pendiente'},accepted:{b:'bPr',t:'Aceptado'},delivering:{b:'bOk',t:'En camino'},delivered:{b:'bOk',t:'Entregado'},cancelled:{b:'bNo',t:'Cancelado'}};
-  document.getElementById('s-orders').innerHTML=
-    '<div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">'+
-    [['all','Todos'],['pending','Pendientes'],['accepted','Aceptados'],['delivering','En camino'],['delivered','Entregados'],['cancelled','Cancelados']].map(function(x){return '<button onclick="renderOrders(\''+x[0]+'\')" class="'+(f===x[0]?'btnP':'btnS')+'" style="font-size:12px;padding:8px 14px;border-radius:10px">'+x[1]+' ('+cnt[x[0]]+')</button>'}).join('')+
-    '</div>'+
-    '<div class="gc"><table class="tbl"><thead><tr><th>Código</th><th>Comedor</th><th>Cliente</th><th>Total</th><th>Repartidor</th><th>Comisión</th><th>Estado</th><th>Hora</th></tr></thead><tbody>'+
-    fl.map(function(o){var s=sm[o.status]||sm.pending;return '<tr><td style="font-family:monospace;font-weight:500;font-size:13px;color:var(--pl)">'+o.code+'</td><td style="font-size:13px">'+o.rest+'</td><td style="font-size:13px">'+o.client+'</td><td style="font-weight:500">$'+o.total.toFixed(2)+'</td><td style="font-size:13px">'+o.driver+'</td><td style="font-size:12px;color:var(--a)">$'+o.commission.toFixed(2)+'</td><td><span class="badge '+s.b+'">'+s.t+'</span></td><td style="font-size:12px;color:var(--tx3)">'+o.time+'</td></tr>'}).join('')+
-    '</tbody></table></div>';
-}
-
-// ========== FINANZAS ==========
-function renderFinance(){
-  var tO=0,tC=0,aR=0;
-  ORDS.forEach(function(o){tO+=o.total;tC+=o.commission});
-  RESTS.forEach(function(r){if(r.status==='active')aR++});
-  var mI=aR*SETTINGS.monthlyFee;
-  document.getElementById('s-finance').innerHTML=
-    '<div class="grid grid-cols-4 gap-4 mb-6">'+
-    '<div class="st aUp"><div style="font-size:12px;color:var(--tx3);margin-bottom:4px">Ingresos Pedidos</div><div style="font-size:20px;font-weight:700;color:var(--ok)">$'+tO.toFixed(0)+'</div></div>'+
-    '<div class="st aUp d1"><div style="font-size:12px;color:var(--tx3);margin-bottom:4px">Mensualidades</div><div style="font-size:20px;font-weight:700;color:var(--pl)">$'+mI.toFixed(0)+'</div><div style="font-size:11px;color:var(--tx3)">'+aR+' x $'+SETTINGS.monthlyFee+'</div></div>'+
-    '<div class="st aUp d2"><div style="font-size:12px;color:var(--tx3);margin-bottom:4px">Comisiones</div><div style="font-size:20px;font-weight:700;color:var(--a)">$'+tC.toFixed(0)+'</div></div>'+
-    '<div class="st aUp d3"><div style="font-size:12px;color:var(--tx3);margin-bottom:4px">Total Estimado</div><div style="font-size:20px;font-weight:700">$'+(tO+mI).toFixed(0)+'</div></div></div>'+
-    '<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">'+
-    '<div class="st aUp d3"><h4 style="font-weight:600;font-size:14px;margin-bottom:12px">Ingresos por Comedor</h4><div style="display:flex;flex-direction:column;gap:8px">'+
-    RESTS.filter(function(r){return r.status==='active'}).map(function(r){var pct=r.income/Math.max(1,tO)*100;return '<div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span>'+r.name+'</span><span style="font-weight:500">$'+r.income+'</span></div><div class="pbar"><div class="pfill" style="width:'+Math.min(100,pct)+'%;background:'+(r.income>3000?'var(--ok)':'var(--a)')+'"></div></div></div>'}).join('')+
-    '</div></div>'+
-    '<div class="st aUp d4"><h4 style="font-weight:600;font-size:14px;margin-bottom:12px">Estado Mensualidades</h4><div style="display:flex;flex-direction:column;gap:8px">'+
-    RESTS.map(function(r){return '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px;border-radius:8px;background:var(--bg)"><div style="display:flex;align-items:center;gap:8px"><span class="dot '+(r.paid?'dot-ok':'dot-no')+'"></span><span style="font-size:13px">'+r.name+'</span></div><button onclick="togglePayR('+r.id+');renderFinance()" class="'+(r.paid?'btnNo':'btnOk')+'" style="padding:3px 10px;font-size:10px">'+(r.paid?'Revertir':'Pagar')+'</button></div>'}).join('')+
-    '</div></div></div>'+
-    '<div class="st aUp d5"><h4 style="font-weight:600;font-size:14px;margin-bottom:12px">Top Repartidores</h4><div class="gc"><table class="tbl"><thead><tr><th>#</th><th>Repartidor</th><th>Entregas</th><th>Rating</th><th>Tipo</th></tr></thead><tbody>'+
-    DRVS.filter(function(d){return d.status==='approved'}).sort(function(a,b){return b.delivered-a.delivered}).map(function(d,i){return '<tr><td style="font-weight:700;color:'+(i<3?'var(--a)':'var(--tx3)')+'">'+(i+1)+'</td><td style="font-size:13px;font-weight:500">'+d.name+'</td><td>'+d.delivered+'</td><td><i class="fas fa-star" style="font-size:11px;color:var(--a)"></i> '+d.rating+'</td><td><span class="badge '+(d.type==='fijo'?'bOk':'bWn')+'">'+d.type+'</span></td></tr>'}).join('')+
-    '</tbody></table></div></div>';
-}
-
-// ========== NOTIFICACIONES ==========
-function renderNotifs(){
-  var ur=NOTIFS.filter(function(n){return !n.read}).length;
-  document.getElementById('s-notifs').innerHTML=
-    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px"><span style="font-size:13px;color:var(--tx2)">'+ur+' sin leer</span><button onclick="markAll()" class="btnS" style="font-size:12px">Marcar todas leídas</button></div>'+
-    '<div style="display:flex;flex-direction:column;gap:8px">'+
-    NOTIFS.map(function(n){var bc=n.type==='ok'?'var(--ok)':n.type==='no'?'var(--no)':'var(--wn)';var bgc=n.type==='ok'?'rgba(16,185,129,.13)':n.type==='no'?'rgba(239,68,68,.13)':'rgba(245,158,11,.13)';var ic=n.type==='ok'?'fa-check-circle':n.type==='no'?'fa-times-circle':'fa-exclamation-triangle';return '<div class="gc" style="padding:16px;display:flex;align-items:flex-start;gap:12px;'+(n.read?'opacity:.6':'')+';border-color:'+(n.read?'var(--bd)':n.type==='no'?'rgba(239,68,68,.3)':'rgba(245,158,11,.3)')+'"><div style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:'+bgc+';flex-shrink:0"><i class="fas '+ic+'" style="font-size:13px;color:'+bc+'"></i></div><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600">'+n.title+'</div><div style="font-size:12px;color:var(--tx2)">'+n.msg+'</div><div style="font-size:11px;color:var(--tx3);margin-top:4px">'+n.time+'</div></div>'+(n.read?'':'<span class="dot dot-wn" style="flex-shrink:0;margin-top:8px"></span>')+'</div>'}).join('')+
-    '</div>';
-}
-function markAll(){NOTIFS.forEach(function(n){n.read=true});renderNotifs();toast('Leídas','Todas marcadas como leídas','ok')}
-
-// ========== CONTRATOS ==========
-function renderContracts(){
-  var fc=RESTS.filter(function(r){return r.contract}).length;
-  var sc=RESTS.filter(function(r){return !r.contract&&r.status!=='pending'}).length;
-  var fd=DRVS.filter(function(d){return d.type==='fijo'}).length;
-  document.getElementById('s-contracts').innerHTML=
-    '<div class="grid grid-cols-3 gap-4 mb-6">'+
-    '<div class="st aUp"><div style="font-size:24px;font-weight:700;color:var(--ok)">'+fc+'</div><div style="font-size:12px;color:var(--tx3)">Firmados</div></div>'+
-    '<div class="st aUp d1"><div style="font-size:24px;font-weight:700;color:var(--wn)">'+sc+'</div><div style="font-size:12px;color:var(--tx3)">Sin Firmar</div></div>'+
-    '<div class="st aUp d2"><div style="font-size:24px;font-weight:700">'+fd+'</div><div style="font-size:12px;color:var(--tx3)">Repartidores Fijos</div></div></div>'+
-    '<div class="gc" style="margin-bottom:16px"><table class="tbl"><thead><tr><th>Comedor</th><th>Contrato</th><th>Tipo Red</th><th>Repartidores Fijos</th><th>Mensualidad</th><th>Acciones</th></tr></thead><tbody>'+
-    RESTS.filter(function(r){return r.status!=='pending'}).map(function(r){
-      var dn=r.drivers.map(function(d){var dr=DRVS.find(function(x){return x.code===d});return dr?dr.name:d}).join(', ')||'Ninguno';
-      return '<tr><td style="font-size:13px;font-weight:500">'+r.name+'</td><td><span class="badge '+(r.contract?'bOk':'bNo')+'">'+(r.contract?'Firmado':'Pendiente')+'</span></td><td><span class="badge '+(r.type==='fijo'?'bOk':r.type==='mixto'?'bWn':'bPr')+'">'+r.type+'</span></td><td style="font-size:13px">'+dn+'</td><td style="font-weight:500">$'+SETTINGS.monthlyFee+'/mes</td><td><button onclick="toggleCon('+r.id+')" class="'+(r.contract?'btnNo':'btnOk')+'" style="padding:4px 10px;font-size:11px">'+(r.contract?'Revocar':'Firmar')+'</button></td></tr>'
-    }).join('')+
-    '</tbody></table></div>'+
-    '<div class="st aUp d3"><h4 style="font-weight:600;font-size:14px;margin-bottom:8px">Asignar Repartidor Fijo</h4><p style="font-size:12px;color:var(--tx2);margin-bottom:12px">Los fijos no pagan comisión. Se asignan por contrato.</p><div style="display:flex;gap:8px;align-items:flex-end"><div style="flex:1"><label style="font-size:11px;display:block;margin-bottom:4px;color:var(--tx3)">Comedor</label><select class="inp" id="aR">'+RESTS.filter(function(r){return r.status==='active'}).map(function(r){return '<option value="'+r.id+'">'+r.name+'</option>'}).join('')+'</select></div><div style="flex:1"><label style="font-size:11px;display:block;margin-bottom:4px;color:var(--tx3)">Repartidor</label><select class="inp" id="aD">'+DRVS.filter(function(d){return d.status==='approved'}).map(function(d){return '<option value="'+d.id+'">'+d.name+' ('+d.code+')</option>'}).join('')+'</select></div><button onclick="assignDrv()" class="btnP" style="font-size:12px"><i class="fas fa-link" style="margin-right:4px"></i>Asignar</button></div></div>';
-}
-function toggleCon(id){var r=RESTS.find(function(x){return x.id===id});if(r){r.contract=!r.contract;renderContracts();toast(r.contract?'Contrato Firmado':'Revocado',r.name,r.contract?'ok':'wn')}}
-function assignDrv(){
-  var ri=parseInt(document.getElementById('aR').value);var di=parseInt(document.getElementById('aD').value);
-  var r=RESTS.find(function(x){return x.id===ri});var d=DRVS.find(function(x){return x.id===di});
-  if(!r||!d)return;
-  if(r.drivers.indexOf(d.code)<0)r.drivers.push(d.code);d.assignedRest=r.code;d.type='fijo';
-  renderContracts();renderDrivers();renderRests();toast('Asignado',d.name+' → '+r.name,'ok');
-}
-
-// ========== CONFIGURACIÓN ==========
-function renderSettings(){
-  document.getElementById('s-settings').innerHTML=
-    '<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">'+
-    '<div class="st aUp"><h4 style="font-weight:600;font-size:14px;margin-bottom:16px"><i class="fas fa-sliders" style="color:var(--pl);margin-right:8px"></i>Parámetros</h4><div style="display:flex;flex-direction:column;gap:16px">'+
-    '<div><label style="font-size:12px;font-weight:500;display:block;margin-bottom:4px;color:var(--tx2)">Comisión Repartidor (%)</label><input class="inp" id="sC" type="number" step="0.1" value="'+SETTINGS.commRate+'"></div>'+
-    '<div><label style="font-size:12px;font-weight:500;display:block;margin-bottom:4px;color:var(--tx2)">Mensualidad Comedor ($)</label><input class="inp" id="sF" type="number" step="0.01" value="'+SETTINGS.monthlyFee+'"></div>'+
-    '<div><label style="font-size:12px;font-weight:500;display:block;margin-bottom:4px;color:var(--tx2)">Radio de Búsqueda (km)</label><input class="inp" id="sR" type="number" value="'+SETTINGS.radius+'"></div>'+
-    '<div><label style="font-size:12px;font-weight:500;display:block;margin-bottom:4px;color:var(--tx2)">Moneda</label><select class="inp" id="sU"><option '+(SETTINGS.currency==='USD'?'selected':'')+'>USD</option><option '+(SETTINGS.currency==='COP'?'selected':'')+'>COP</option><option '+(SETTINGS.currency==='EUR'?'selected':'')+'>EUR</option><option '+(SETTINGS.currency==='MXN'?'selected':'')+'>MXN</option></select></div>'+
-    '<button onclick="saveSet()" class="btnP"><i class="fas fa-save" style="margin-right:4px"></i>Guardar</button></div></div>'+
-    '<div class="st aUp d1"><h4 style="font-weight:600;font-size:14px;margin-bottom:16px"><i class="fas fa-shield-halved" style="color:var(--ok);margin-right:8px"></i>Seguridad</h4><div style="display:flex;flex-direction:column;gap:12px">'+
-    '<div><label style="font-size:12px;font-weight:500;display:block;margin-bottom:4px;color:var(--tx2)">Cambiar Contraseña</label><input class="inp" id="nP1" type="password" placeholder="Nueva contraseña"><input class="inp" id="nP2" type="password" placeholder="Confirmar" style="margin-top:8px"><button onclick="changePw()" class="btnOk" style="font-size:12px;margin-top:8px"><i class="fas fa-key" style="margin-right:4px"></i>Cambiar</button></div>'+
-    '<div style="padding:12px;border-radius:12px;background:var(--bg)"><div style="font-size:12px;color:var(--tx3)">Admin actual</div><div style="font-size:13px;font-weight:500">Emmanuel · Super Admin</div></div></div></div>'+
-    '<div class="st aUp d2"><h4 style="font-weight:600;font-size:14px;margin-bottom:16px"><i class="fas fa-database" style="color:var(--a);margin-right:8px"></i>Datos</h4><div style="display:flex;flex-direction:column;gap:8px;font-size:13px">'+
-    '<div style="display:flex;justify-content:space-between;padding:8px;border-radius:8px;background:var(--bg)"><span style="color:var(--tx2)">Usuarios</span><span style="font-weight:500">'+USERS.length+'</span></div>'+
-    '<div style="display:flex;justify-content:space-between;padding:8px;border-radius:8px;background:var(--bg)"><span style="color:var(--tx2)">Comedores</span><span style="font-weight:500">'+RESTS.length+'</span></div>'+
-    '<div style="display:flex;justify-content:space-between;padding:8px;border-radius:8px;background:var(--bg)"><span style="color:var(--tx2)">Repartidores</span><span style="font-weight:500">'+DRVS.length+'</span></div>'+
-    '<div style="display:flex;justify-content:space-between;padding:8px;border-radius:8px;background:var(--bg)"><span style="color:var(--tx2)">Pedidos</span><span style="font-weight:500">'+ORDS.length+'</span></div>'+
-    '</div><button onclick="if(confirm(\'Limpiar datos?\')){localStorage.clear();location.reload()}" class="btnNo" style="font-size:12px;margin-top:12px"><i class="fas fa-trash" style="margin-right:4px"></i>Limpiar Datos</button></div>'+
-    '<div class="st aUp d3" style="text-align:center;padding:30px"><svg viewBox="0 0 220 70" width="140" height="45" style="margin:0 auto 12px"><path d="M28 8C28 8,12 22,12 33C12 42,19 49,28 49C37 49,44 42,44 33C44 22,28 8,28 8Z" fill="url(#g1)"/><circle cx="28" cy="31" r="6" fill="#fff"/><line x1="48" y1="24" x2="58" y2="24" stroke="#A78BFA" stroke-width="2.5" stroke-linecap="round"/><line x1="50" y1="30" x2="64" y2="30" stroke="#7C3AED" stroke-width="2.5" stroke-linecap="round"/><line x1="48" y1="36" x2="56" y2="36" stroke="#5B21B6" stroke-width="2.5" stroke-linecap="round" opacity=".7"/><text x="72" y="42" font-family="Outfit" font-weight="900" font-size="26" fill="#F8F7FF">Aky<tspan fill="#A78BFA">Voy</tspan></text></svg><div style="font-weight:700">AkyVoy Panel v1.0</div><div style="font-size:12px;color:var(--tx2);margin-top:4px">Sistema de gestión para Emmanuel</div></div>'+
-    '</div>';
-}
-function saveSet(){SETTINGS.commRate=parseFloat(document.getElementById('sC').value);SETTINGS.monthlyFee=parseFloat(document.getElementById('sF').value);SETTINGS.radius=parseInt(document.getElementById('sR').value);SETTINGS.currency=document.getElementById('sU').value;toast('Guardado','Configuración actualizada','ok');renderFinance()}
-function changePw(){var p1=document.getElementById('nP1').value;var p2=document.getElementById('nP2').value;if(!p1||p1.length<6){toast('Error','Mínimo 6 caracteres','no');return}if(p1!==p2){toast('Error','No coinciden','no');return}document.getElementById('nP1').value='';document.getElementById('nP2').value='';toast('Cambiada','Recuerda tu nueva contraseña','ok')}
-</script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="conexion.js"></script>
 <script>
-// Sincronización en tiempo real para el Panel de Control
-async function syncOrders() {
-    const { data, error } = await _supabase
-        .from('pedidos')
+let S = { orders: [] };
+
+function toast(t, m) {
+    const el = document.createElement('div');
+    el.className = 'toast';
+    el.innerHTML = `<strong>${t}</strong><p>${m}</p>`;
+    document.getElementById('toasts').appendChild(el);
+    setTimeout(() => el.remove(), 3000);
+}
+
+async function cargarTodo() {
+    const { data } = await _supabase.from('pedidos')
         .select('*')
         .order('id', { ascending: false });
-    if (data) {
-        ORDS = data;
-        if(typeof renderOrders === 'function') renderOrders();
-        if(typeof renderDashboard === 'function') renderDashboard();
+    if(data) {
+        S.orders = data;
+        renderPanel();
     }
 }
 
-_supabase
-    .channel('panel-changes')
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'pedidos' }, (payload) => {
-        console.log('Cambio detectado en Panel:', payload);
-        syncOrders();
-        toast('Actualización', 'Se ha detectado un cambio en los pedidos', 'info');
-    })
-    .subscribe();
+function renderPanel() {
+    const rows = document.getElementById('order-rows');
+    const total = document.getElementById('stat-total');
+    const active = document.getElementById('stat-active');
 
-// Carga inicial
-syncOrders();
+    total.textContent = S.orders.length;
+    active.textContent = S.orders.filter(o => o.estado !== 'Entregado').length;
+
+    rows.innerHTML = S.orders.map(o => `
+        <tr>
+            <td>#${o.id}</td>
+            <td>${o.cliente_nombre}</td>
+            <td>${o.comercio_nombre}</td>
+            <td>${o.repartidor_nombre || '<span class="text-gray-500">Sin asignar</span>'}</td>
+            <td><span class="badge ${o.estado === 'Entregado' ? 'bOk' : o.estado === 'Pendiente' ? 'bWn' : 'bPr'}">${o.estado}</span></td>
+            <td>Q${o.total}</td>
+            <td>
+                <button onclick="eliminarPedido(${o.id})" class="text-red-500 hover:text-red-400"><i class="fas fa-trash"></i></button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+async function eliminarPedido(id) {
+    if(!confirm('¿Eliminar pedido #' + id + '?')) return;
+    const { error } = await _supabase.from('pedidos').delete().eq('id', id);
+    if(error) toast('Error', error.message);
+    else {
+        toast('Eliminado', 'Pedido #' + id + ' eliminado del sistema');
+        cargarTodo();
+    }
+}
+
+_supabase.channel('cambios-panel')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'pedidos' }, payload => {
+        cargarTodo();
+        toast('Actualización', 'Cambio detectado en pedido #' + (payload.new ? payload.new.id : payload.old.id));
+    }).subscribe();
+
+cargarTodo();
 </script>
 </body>
 </html>
