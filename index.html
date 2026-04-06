@@ -44,7 +44,7 @@ body{background:var(--bg);color:var(--tx);min-height:100vh}
 <div id="pgA" class="page" style="display:none">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold">AkyVoy - Panel de Control</h1>
-        <button onclick="location.reload()" class="text-xs text-red-400">Cerrar Sesión</button>
+        <button onclick="doLogout()" class="text-xs text-red-400">Cerrar Sesión</button>
     </div>
 
     <div class="flex border-b border-gray-800 mb-6">
@@ -92,8 +92,33 @@ body{background:var(--bg);color:var(--tx);min-height:100vh}
     </div>
 </div>
 
+<!-- MODAL EDITAR PERFIL (GESTIÓN PROFUNDA) -->
+<div id="modalEdit" class="fixed inset-0 bg-black/80 flex items-center justify-center p-6 z-50" style="display:none">
+    <div class="gc w-full max-w-lg max-h-[90vh] overflow-y-auto">
+        <h3 class="text-lg font-bold mb-4">Gestionar Perfil: <span id="eNomTitle"></span></h3>
+        <div class="space-y-4">
+            <div>
+                <label class="text-xs text-gray-400">Foto de Perfil (URL)</label>
+                <input id="eFoto" class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-xs">
+            </div>
+            <div>
+                <label class="text-xs text-gray-400">Foto de Portada (URL)</label>
+                <input id="ePort" class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-xs">
+            </div>
+            <div>
+                <label class="text-xs text-gray-400">Descripción / Menú (Texto o JSON)</label>
+                <textarea id="eDesc" class="w-full p-2 bg-gray-900 border border-gray-700 rounded text-xs h-24"></textarea>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="guardarCambiosPerfil()" class="btn btn-p flex-1">Guardar Cambios</button>
+                <button onclick="cerrarModalEdit()" class="btn btn-no flex-1">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- MODAL CREAR PERFIL -->
-<div id="modalPerfil" class="fixed inset-0 bg-black/80 flex items-center justify-center p-6" style="display:none">
+<div id="modalPerfil" class="fixed inset-0 bg-black/80 flex items-center justify-center p-6 z-50" style="display:none">
     <div class="gc w-full max-w-md">
         <h3 class="text-lg font-bold mb-4">Crear Nuevo Perfil</h3>
         <input id="pID" class="w-full p-2 bg-gray-900 border border-gray-700 rounded mb-3" placeholder="ID de Acceso (ej: COM-01, REP-01)">
@@ -116,7 +141,7 @@ body{background:var(--bg);color:var(--tx);min-height:100vh}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="conexion.js"></script>
 <script>
-let S = { orders: [], perfiles: [] };
+let S = { orders: [], perfiles: [], editingId: null };
 
 function toast(t, m) {
     const el = document.createElement('div');
@@ -130,9 +155,22 @@ async function doLogin() {
     const id = document.getElementById('lID').value;
     const { data, error } = await _supabase.from('perfiles').select('*').eq('id', id).eq('rol', 'admin').single();
     if(error || !data) return alert('Acceso denegado: ID de administrador no válido');
-    document.getElementById('pgL').style.display = 'none';
-    document.getElementById('pgA').style.display = 'block';
-    cargarTodo();
+    localStorage.setItem('aky_admin', id);
+    initApp();
+}
+
+function doLogout() {
+    localStorage.removeItem('aky_admin');
+    location.reload();
+}
+
+function initApp() {
+    const saved = localStorage.getItem('aky_admin');
+    if(saved) {
+        document.getElementById('pgL').style.display = 'none';
+        document.getElementById('pgA').style.display = 'block';
+        cargarTodo();
+    }
 }
 
 function goT(t) {
@@ -171,8 +209,8 @@ function renderPanel() {
             <td><span class="badge bPr">${p.rol.toUpperCase()}</span></td>
             <td><span class="badge ${p.activo ? 'bOk' : 'bNo'}">${p.activo ? 'Activo' : 'Inactivo'}</span></td>
             <td>
-                <button onclick="toggleActivo('${p.id}', ${p.activo})" class="btn ${p.activo ? 'btn-no' : 'btn-p'}">${p.activo ? 'Desactivar' : 'Activar'}</button>
-                <button onclick="eliminarPerfil('${p.id}')" class="text-red-500 ml-2"><i class="fas fa-trash"></i></button>
+                <button onclick="abrirModalEdit('${p.id}')" class="btn btn-a"><i class="fas fa-edit"></i> Gestionar</button>
+                <button onclick="toggleActivo('${p.id}', ${p.activo})" class="btn ${p.activo ? 'btn-no' : 'btn-p'} ml-1">${p.activo ? 'Desactivar' : 'Activar'}</button>
             </td>
         </tr>
     `).join('');
@@ -180,6 +218,34 @@ function renderPanel() {
 
 function abrirModalPerfil() { document.getElementById('modalPerfil').style.display = 'flex'; }
 function cerrarModalPerfil() { document.getElementById('modalPerfil').style.display = 'none'; }
+
+async function abrirModalEdit(id) {
+    const p = S.perfiles.find(x => x.id === id);
+    if(!p) return;
+    S.editingId = id;
+    document.getElementById('eNomTitle').textContent = p.nombre;
+    document.getElementById('eFoto').value = p.foto_perfil || '';
+    document.getElementById('ePort').value = p.foto_portada || '';
+    document.getElementById('eDesc').value = p.descripcion || '';
+    document.getElementById('modalEdit').style.display = 'flex';
+}
+
+function cerrarModalEdit() { document.getElementById('modalEdit').style.display = 'none'; }
+
+async function guardarCambiosPerfil() {
+    const { error } = await _supabase.from('perfiles').update({
+        foto_perfil: document.getElementById('eFoto').value,
+        foto_portada: document.getElementById('ePort').value,
+        descripcion: document.getElementById('eDesc').value
+    }).eq('id', S.editingId);
+    
+    if(error) toast('Error', error.message);
+    else {
+        toast('Éxito', 'Perfil actualizado correctamente');
+        cerrarModalEdit();
+        cargarTodo();
+    }
+}
 
 async function guardarPerfil() {
     const id = document.getElementById('pID').value;
@@ -201,12 +267,6 @@ async function toggleActivo(id, actual) {
     cargarTodo();
 }
 
-async function eliminarPerfil(id) {
-    if(!confirm('¿Eliminar perfil?')) return;
-    await _supabase.from('perfiles').delete().eq('id', id);
-    cargarTodo();
-}
-
 async function eliminarPedido(id) {
     if(!confirm('¿Eliminar pedido?')) return;
     await _supabase.from('pedidos').delete().eq('id', id);
@@ -215,6 +275,8 @@ async function eliminarPedido(id) {
 
 _supabase.channel('cambios-admin').on('postgres_changes', { event: '*', schema: 'public', table: 'pedidos' }, () => cargarTodo()).subscribe();
 _supabase.channel('cambios-perfiles').on('postgres_changes', { event: '*', schema: 'public', table: 'perfiles' }, () => cargarTodo()).subscribe();
+
+initApp();
 </script>
 </body>
 </html>
