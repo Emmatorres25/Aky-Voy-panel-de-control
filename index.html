@@ -501,5 +501,31 @@ function changePw(){var p1=document.getElementById('nP1').value;var p2=document.
 </script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="conexion.js"></script>
+<script>
+// Sincronización en tiempo real para el Panel de Control
+async function syncOrders() {
+    const { data, error } = await _supabase
+        .from('pedidos')
+        .select('*')
+        .order('id', { ascending: false });
+    if (data) {
+        ORDS = data;
+        if(typeof renderOrders === 'function') renderOrders();
+        if(typeof renderDashboard === 'function') renderDashboard();
+    }
+}
+
+_supabase
+    .channel('panel-changes')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'pedidos' }, (payload) => {
+        console.log('Cambio detectado en Panel:', payload);
+        syncOrders();
+        toast('Actualización', 'Se ha detectado un cambio en los pedidos', 'info');
+    })
+    .subscribe();
+
+// Carga inicial
+syncOrders();
+</script>
 </body>
 </html>
