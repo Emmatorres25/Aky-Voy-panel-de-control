@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>AkyVoy - Panel de Control</title>
+<title>AkyVoy - Admin Panel</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -33,25 +33,23 @@ body{background:var(--bg);color:var(--tx);min-height:100vh}
 </head>
 <body>
 
-<div class="page">
+<div id="pgL" class="flex items-center justify-center min-h-screen p-10">
+    <div class="gc w-full max-w-md text-center">
+        <h2 class="text-2xl font-bold mb-4">AkyVoy Admin</h2>
+        <input id="lID" class="w-full p-3 bg-gray-900 border border-gray-700 rounded mb-3" placeholder="ID de Administrador">
+        <button onclick="doLogin()" class="btn btn-p w-full p-3">Entrar al Panel</button>
+    </div>
+</div>
+
+<div id="pgA" class="page" style="display:none">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold">AkyVoy - Panel de Control</h1>
-        <div class="flex gap-4">
-            <div class="gc p-2 text-center min-w-[100px]">
-                <div id="stat-total" class="text-xl font-bold">0</div>
-                <div class="text-[10px] text-gray-400">Pedidos Hoy</div>
-            </div>
-            <div class="gc p-2 text-center min-w-[100px]">
-                <div id="stat-active" class="text-xl font-bold text-purple-400">0</div>
-                <div class="text-[10px] text-gray-400">En Curso</div>
-            </div>
-        </div>
+        <button onclick="location.reload()" class="text-xs text-red-400">Cerrar Sesión</button>
     </div>
 
     <div class="flex border-b border-gray-800 mb-6">
         <div class="nav-btn on" onclick="goT('pedidos')">Pedidos</div>
-        <div class="nav-btn" onclick="goT('comedores')">Comedores</div>
-        <div class="nav-btn" onclick="goT('repartidores')">Repartidores</div>
+        <div class="nav-btn" onclick="goT('perfiles')">Gestión de Perfiles</div>
     </div>
 
     <!-- SECCIÓN PEDIDOS -->
@@ -73,45 +71,43 @@ body{background:var(--bg);color:var(--tx);min-height:100vh}
         </table>
     </div>
 
-    <!-- SECCIÓN COMEDORES -->
-    <div id="sec-comedores" class="gc overflow-x-auto" style="display:none">
+    <!-- SECCIÓN PERFILES -->
+    <div id="sec-perfiles" class="gc overflow-x-auto" style="display:none">
         <div class="flex justify-between mb-4">
-            <h2 class="text-lg font-bold">Gestión de Comedores</h2>
-            <button onclick="crearPerfil('comercio')" class="btn btn-p">+ Nuevo Comedor</button>
+            <h2 class="text-lg font-bold">Usuarios del Sistema</h2>
+            <button onclick="abrirModalPerfil()" class="btn btn-p">+ Crear Perfil Manual</button>
         </div>
         <table class="tbl">
             <thead>
                 <tr>
-                    <th>ID</th>
+                    <th>ID / Acceso</th>
                     <th>Nombre</th>
-                    <th>Foto</th>
+                    <th>Rol</th>
                     <th>Estado</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
-            <tbody id="comedor-rows"></tbody>
+            <tbody id="perfil-rows"></tbody>
         </table>
     </div>
+</div>
 
-    <!-- SECCIÓN REPARTIDORES -->
-    <div id="sec-repartidores" class="gc overflow-x-auto" style="display:none">
-        <div class="flex justify-between mb-4">
-            <h2 class="text-lg font-bold">Gestión de Repartidores</h2>
-            <button onclick="crearPerfil('repartidor')" class="btn btn-p">+ Nuevo Repartidor</button>
+<!-- MODAL CREAR PERFIL -->
+<div id="modalPerfil" class="fixed inset-0 bg-black/80 flex items-center justify-center p-6" style="display:none">
+    <div class="gc w-full max-w-md">
+        <h3 class="text-lg font-bold mb-4">Crear Nuevo Perfil</h3>
+        <input id="pID" class="w-full p-2 bg-gray-900 border border-gray-700 rounded mb-3" placeholder="ID de Acceso (ej: COM-01, REP-01)">
+        <input id="pNom" class="w-full p-2 bg-gray-900 border border-gray-700 rounded mb-3" placeholder="Nombre Completo">
+        <select id="pRol" class="w-full p-2 bg-gray-900 border border-gray-700 rounded mb-3">
+            <option value="cliente">Cliente</option>
+            <option value="comedor">Comedor</option>
+            <option value="repartidor">Repartidor</option>
+            <option value="admin">Administrador</option>
+        </select>
+        <div class="flex gap-2">
+            <button onclick="guardarPerfil()" class="btn btn-p flex-1">Guardar</button>
+            <button onclick="cerrarModalPerfil()" class="btn btn-no flex-1">Cancelar</button>
         </div>
-        <table class="tbl">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Foto</th>
-                    <th>Saldo</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody id="repartidor-rows"></tbody>
-        </table>
     </div>
 </div>
 
@@ -120,7 +116,7 @@ body{background:var(--bg);color:var(--tx);min-height:100vh}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="conexion.js"></script>
 <script>
-let S = { orders: [], comedores: [], repartidores: [] };
+let S = { orders: [], perfiles: [] };
 
 function toast(t, m) {
     const el = document.createElement('div');
@@ -130,10 +126,18 @@ function toast(t, m) {
     setTimeout(() => el.remove(), 3000);
 }
 
+async function doLogin() {
+    const id = document.getElementById('lID').value;
+    const { data, error } = await _supabase.from('perfiles').select('*').eq('id', id).eq('rol', 'admin').single();
+    if(error || !data) return alert('Acceso denegado: ID de administrador no válido');
+    document.getElementById('pgL').style.display = 'none';
+    document.getElementById('pgA').style.display = 'block';
+    cargarTodo();
+}
+
 function goT(t) {
     document.getElementById('sec-pedidos').style.display = t === 'pedidos' ? 'block' : 'none';
-    document.getElementById('sec-comedores').style.display = t === 'comedores' ? 'block' : 'none';
-    document.getElementById('sec-repartidores').style.display = t === 'repartidores' ? 'block' : 'none';
+    document.getElementById('sec-perfiles').style.display = t === 'perfiles' ? 'block' : 'none';
     document.querySelectorAll('.nav-btn').forEach(n => n.classList.remove('on'));
     event.currentTarget.classList.add('on');
     cargarTodo();
@@ -141,20 +145,13 @@ function goT(t) {
 
 async function cargarTodo() {
     const { data: p } = await _supabase.from('pedidos').select('*').order('id', { ascending: false });
-    const { data: c } = await _supabase.from('comercios').select('*').order('created_at', { ascending: false });
-    const { data: r } = await _supabase.from('repartidores').select('*').order('created_at', { ascending: false });
-    
+    const { data: u } = await _supabase.from('perfiles').select('*').order('created_at', { ascending: false });
     S.orders = p || [];
-    S.comedores = c || [];
-    S.repartidores = r || [];
-    
+    S.perfiles = u || [];
     renderPanel();
 }
 
 function renderPanel() {
-    // Pedidos
-    document.getElementById('stat-total').textContent = S.orders.length;
-    document.getElementById('stat-active').textContent = S.orders.filter(o => o.estado !== 'Entregado').length;
     document.getElementById('order-rows').innerHTML = S.orders.map(o => `
         <tr>
             <td>#${o.id}</td>
@@ -167,76 +164,57 @@ function renderPanel() {
         </tr>
     `).join('');
 
-    // Comedores
-    document.getElementById('comedor-rows').innerHTML = S.comedores.map(c => `
+    document.getElementById('perfil-rows').innerHTML = S.perfiles.map(p => `
         <tr>
-            <td>${c.id}</td>
-            <td>${c.nombre}</td>
-            <td><img src="${c.foto_perfil || 'https://via.placeholder.com/30'}" class="w-8 h-8 rounded-full object-cover"></td>
-            <td><span class="badge ${c.activo ? 'bOk' : 'bNo'}">${c.activo ? 'Activo' : 'Inactivo'}</span></td>
+            <td>${p.id}</td>
+            <td>${p.nombre}</td>
+            <td><span class="badge bPr">${p.rol.toUpperCase()}</span></td>
+            <td><span class="badge ${p.activo ? 'bOk' : 'bNo'}">${p.activo ? 'Activo' : 'Inactivo'}</span></td>
             <td>
-                <button onclick="toggleActivo('comercios', '${c.id}', ${c.activo})" class="btn ${c.activo ? 'btn-no' : 'btn-p'}">${c.activo ? 'Desactivar' : 'Activar'}</button>
-                <button onclick="editarFoto('comercios', '${c.id}')" class="btn btn-a"><i class="fas fa-image"></i></button>
-            </td>
-        </tr>
-    `).join('');
-
-    // Repartidores
-    document.getElementById('repartidor-rows').innerHTML = S.repartidores.map(r => `
-        <tr>
-            <td>${r.id}</td>
-            <td>${r.nombre}</td>
-            <td><img src="${r.foto_perfil || 'https://via.placeholder.com/30'}" class="w-8 h-8 rounded-full object-cover"></td>
-            <td>Q${r.saldo}</td>
-            <td><span class="badge ${r.activo ? 'bOk' : 'bNo'}">${r.activo ? 'Activo' : 'Inactivo'}</span></td>
-            <td>
-                <button onclick="toggleActivo('repartidores', '${r.id}', ${r.activo})" class="btn ${r.activo ? 'btn-no' : 'btn-p'}">${r.activo ? 'Desactivar' : 'Activar'}</button>
-                <button onclick="editarFoto('repartidores', '${r.id}')" class="btn btn-a"><i class="fas fa-image"></i></button>
+                <button onclick="toggleActivo('${p.id}', ${p.activo})" class="btn ${p.activo ? 'btn-no' : 'btn-p'}">${p.activo ? 'Desactivar' : 'Activar'}</button>
+                <button onclick="eliminarPerfil('${p.id}')" class="text-red-500 ml-2"><i class="fas fa-trash"></i></button>
             </td>
         </tr>
     `).join('');
 }
 
-async function toggleActivo(tabla, id, actual) {
-    const { error } = await _supabase.from(tabla).update({ activo: !actual }).eq('id', id);
-    if(error) toast('Error', error.message);
-    else cargarTodo();
-}
+function abrirModalPerfil() { document.getElementById('modalPerfil').style.display = 'flex'; }
+function cerrarModalPerfil() { document.getElementById('modalPerfil').style.display = 'none'; }
 
-async function editarFoto(tabla, id) {
-    const url = prompt('Ingresa la URL de la nueva foto de perfil:');
-    if(!url) return;
-    const { error } = await _supabase.from(tabla).update({ foto_perfil: url }).eq('id', id);
-    if(error) toast('Error', error.message);
-    else cargarTodo();
-}
+async function guardarPerfil() {
+    const id = document.getElementById('pID').value;
+    const nombre = document.getElementById('pNom').value;
+    const rol = document.getElementById('pRol').value;
+    if(!id || !nombre) return alert('Completa los campos');
 
-async function crearPerfil(tipo) {
-    const id = prompt('Ingresa el ID de acceso (ej: COM-0001 o REP-0042):');
-    const nombre = prompt('Ingresa el nombre:');
-    if(!id || !nombre) return;
-    
-    const tabla = tipo === 'comercio' ? 'comercios' : 'repartidores';
-    const { error } = await _supabase.from(tabla).insert([{ id, nombre, activo: true }]);
-    
+    const { error } = await _supabase.from('perfiles').insert([{ id, nombre, rol, activo: true }]);
     if(error) toast('Error', error.message);
     else {
         toast('Éxito', 'Perfil creado correctamente');
+        cerrarModalPerfil();
         cargarTodo();
     }
 }
 
+async function toggleActivo(id, actual) {
+    await _supabase.from('perfiles').update({ activo: !actual }).eq('id', id);
+    cargarTodo();
+}
+
+async function eliminarPerfil(id) {
+    if(!confirm('¿Eliminar perfil?')) return;
+    await _supabase.from('perfiles').delete().eq('id', id);
+    cargarTodo();
+}
+
 async function eliminarPedido(id) {
-    if(!confirm('¿Eliminar pedido #' + id + '?')) return;
+    if(!confirm('¿Eliminar pedido?')) return;
     await _supabase.from('pedidos').delete().eq('id', id);
     cargarTodo();
 }
 
-_supabase.channel('cambios-panel').on('postgres_changes', { event: '*', schema: 'public', table: 'pedidos' }, () => cargarTodo()).subscribe();
-_supabase.channel('cambios-perfiles').on('postgres_changes', { event: '*', schema: 'public', table: 'comercios' }, () => cargarTodo()).subscribe();
-_supabase.channel('cambios-repartidores').on('postgres_changes', { event: '*', schema: 'public', table: 'repartidores' }, () => cargarTodo()).subscribe();
-
-cargarTodo();
+_supabase.channel('cambios-admin').on('postgres_changes', { event: '*', schema: 'public', table: 'pedidos' }, () => cargarTodo()).subscribe();
+_supabase.channel('cambios-perfiles').on('postgres_changes', { event: '*', schema: 'public', table: 'perfiles' }, () => cargarTodo()).subscribe();
 </script>
 </body>
 </html>
